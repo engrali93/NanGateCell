@@ -588,7 +588,7 @@ int main()
 								//cout << "hmmm" << output << endl;
 							}
 							
-							if (foundA != true && foundB != true) {
+							else if (foundA != true && foundB != true) {
 
 								sorting_Nomatch_list.push_back(output);
 							}
@@ -627,10 +627,10 @@ int main()
 							if (foundC == true && foundD == true && foundE == true && foundF == true) {
 								sorting_list.push_front(output);
 							}
-							if (foundC != true && foundD != true && foundE != true && foundF != true) {
+							else if (foundC != true && foundD != true && foundE != true && foundF != true) {
 								sorting_Nomatch_list.push_back(output);
 							}
-							if ((foundC == true && foundD == true) && (foundE == true || foundF == true)) {
+							else if ((foundC == true && foundD == true) && (foundE == true || foundF == true)) {
 								sorting_list.push_back(output);
 
 								//	for (int a = 0; a < ip_Vec.size(); a++){
@@ -648,18 +648,36 @@ int main()
 							//	if (error.empty()) { sorting_list2.push_back(output); }
 							//	if (error.size() > 0) for (auto v : error) sorting_list2.push_front(v);
 							}
-							if ((foundC == true || foundD == true) && (foundE == true && foundF == true)) {
-								sorting_list.push_back(output);
+							else if ((foundC == true || foundD == true) && (foundE == true && foundF == true)) {
+								sorting_list.push_back(output); // 3 known entities
 							}
-							if ((foundC != true && foundD != true) && (foundE == true && foundF == true)) {
-								sorting_list2.push_back(output);
+							else if ((foundC != true && foundD != true) && (foundE == true && foundF == true)) {
+								sorting_list2.push_front(output); // 2 known entities
 							}
-							if ((foundC == true && foundD == true) && (foundE != true && foundF != true)) {
-								sorting_list2.push_back(output);
+							else if ((foundC == true && foundD == true) && (foundE != true && foundF != true)) {
+								sorting_list2.push_front(output); // 2 known entities
 							}
-							else {
-								sorting_Nomatch_list.push_front(output);
+							
+							else if (!(foundC == true && foundE == true) && (foundD == true && foundF == true)) {
+								sorting_list2.push_front(output); // 2 known entities
 							}
+
+							else if ((foundC == true && foundE == true) && !(foundD == true && foundF == true)) {
+								sorting_list2.push_front(output); // 2 known entities
+							}
+							else if ((foundC == true && foundF == true) && !(foundD == true && foundE == true)) {
+								sorting_list2.push_front(output); // 2 known entities
+							}
+							else if ((foundD == true && foundE == true) && !(foundC == true && foundF == true)) {
+								sorting_list2.push_front(output); // 2 known entities
+							}
+							else if ((foundC == true || foundD == true) && !(foundE == true && foundF == true) && !(foundC ==true && foundD ==true)) {
+								sorting_Nomatch_list.push_front(output); // 1 known entities
+							}
+							else if (!(foundC == true && foundD == true) && (foundE == true || foundF == true) && !(foundE == true && foundF == true)) {
+								sorting_Nomatch_list.push_front(output); // 1 known entities
+							}
+							
 
 						}
 						//else sorting_list2.push_back(output);
@@ -722,17 +740,19 @@ int main()
 				cout << "\nRESULT" << endl;
 				
 				
-				/*for (auto v : sorting_list2)
-					sorting_list.push_back(v);*/
+				for (auto v : sorting_list2)
+					sorting_list.push_back(v);
+				for (auto v : sorting_Nomatch_list)
+					sorting_list.push_back(v);
 					//std::cout << v << endl;
 				for (auto v : sorting_list)
 					std::cout << v << endl;
-				cout << "\nRESULT 2" << endl;
+				/*cout << "\nRESULT 2" << endl;
 				for (auto v : sorting_list2)
 					std::cout << v << endl;
 				cout << "\nRESULT No" << endl;
 				for (auto v : sorting_Nomatch_list)
-					std::cout << v << endl;
+					std::cout << v << endl;*/
 				/*for (auto v : op_result)
 					std::cout << v << ": " << hashGateValue[v] << endl;*/
 				for (int a = 0; a < sorting_list.size(); a++) {// (read_line.find("begin") != std::string::npos));
