@@ -16,12 +16,39 @@
 #include <cctype>
 #include <regex>
 #include "moreFunc.h"
+#include "NanGateCell.h"
+#include <stdio.h>
 
 
 
 
 
 using namespace std;
+
+
+
+template<typename Out>
+void split(const std::string &s, char delim, Out result) {
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		*(result++) = item;
+	}
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+	std::vector<std::string> elems;
+	split(s, delim, std::back_inserter(elems));
+	return elems;
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -38,6 +65,7 @@ int main()
 	gateData gateData;
 	gateFunction gatefunction;
 	inputVector inputVectorNew;
+	NanGateCell nangatecell;
 	unordered_map<string, int> hashGateValue;
 	unordered_map<string, int, int> hashFunction2in;
 	unordered_map<string, int, int,int> hashFunction3in;
@@ -747,14 +775,7 @@ int main()
 					//std::cout << v << endl;
 				for (auto v : sorting_list)
 					std::cout << v << endl;
-				/*cout << "\nRESULT 2" << endl;
-				for (auto v : sorting_list2)
-					std::cout << v << endl;
-				cout << "\nRESULT No" << endl;
-				for (auto v : sorting_Nomatch_list)
-					std::cout << v << endl;*/
-				/*for (auto v : op_result)
-					std::cout << v << ": " << hashGateValue[v] << endl;*/
+				
 				for (int a = 0; a < sorting_list.size(); a++) {// (read_line.find("begin") != std::string::npos));
 				
 					//cout << a << sorting_list.get_allocator(a) << endl;
@@ -768,6 +789,62 @@ int main()
 				
 			}
 			
+		
+			///////////////////////
+			// Gate
+			//////////////////////////////////////////
+			
+			//for (int a = 0; a < sorting_list.size(); a++) {// (read_line.find("begin") != std::string::npos));
+
+			//		//cout << a << sorting_list.get_allocator(a) << endl;
+			//	auto it1 = std::next(sorting_list.begin(), a);
+
+			//	//std::cout << "3rd element = " << *it1 << std::endl;
+
+			//	std::string asd;
+			//	asd = *it1;
+			//	if ((pos = asd.find("port map")) != std::string::npos) {
+			//		//std::size_t position = a.find(":");
+			//		std::string str = "We think in generalities, but we live in details.";
+			//		std::size_t position = asd.find(" : ");
+			//		cout << "position" << position << endl;
+			//	}
+			//
+			//
+			//}
+
+			
+			
+			for (auto v : sorting_list) {
+				std::string a;
+				a = v;
+				if ((pos = a.find("port map")) != std::string::npos) {
+					//std::size_t position = a.find(":");
+					//a.erase(remove_if(a.begin(), a.end(), isspace), a.end());
+					
+					size_t pos = a.find("port map");
+					//size_t pos1 = a.find("(");
+					string str = a.substr(pos+8); // gate data
+					string str1 = a.erase(pos);//gate name
+					/*str.erase(0,1);
+					str.erase(str.size()-1);*/
+					str = str.substr(1, str.size() - 2);
+					str.erase(remove_if(str.begin(), str.end(), isspace), str.end());
+					str1.erase(remove_if(str1.begin(), str1.end(), isspace), str1.end());
+					
+					
+					cout << str <<endl;
+					cout << str1 << endl;
+					nangatecell.gate(str, str1);
+					std::vector<std::string> x = split(str, ',');
+					for (int i = 0; i < (int)x.size(); i++) {
+						size_t pos = x.at(i).find("=>");
+						cout << x.at(i).substr(pos+2) << endl;
+					}
+				}
+				cout << "next"<< endl;
+			}
+
 		}
 		file_.close();
 

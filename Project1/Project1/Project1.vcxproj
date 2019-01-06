@@ -124,6 +124,7 @@
     <ClInclude Include="commonFunction.h" />
     <ClInclude Include="inputVector.h" />
     <ClInclude Include="moreFunc.h" />
+    <ClInclude Include="NanGateCell.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
