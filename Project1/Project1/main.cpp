@@ -70,6 +70,7 @@ int main()
 	unordered_map<string, int, int> hashFunction2in;
 	unordered_map<string, int, int,int> hashFunction3in;
 	unordered_map<string, string, string, string> hashsorting;
+	unordered_map<string, int> hash_Temp;
 	std::list<string> sort_acc_ip;
 	std::list<string> functionSeparate;
 	
@@ -835,12 +836,47 @@ int main()
 					
 					cout << str <<endl;
 					cout << str1 << endl;
-					nangatecell.gate(str, str1);
+					//nangatecell.gate(str, str1);
 					std::vector<std::string> x = split(str, ',');
+					std::vector<std::string> port_data;
+					//cout << "vector size " << x.size();
 					for (int i = 0; i < (int)x.size(); i++) {
 						size_t pos = x.at(i).find("=>");
-						cout << x.at(i).substr(pos+2) << endl;
+						port_data.push_back(x.at(i).substr(pos + 2));
+						//cout << x.at(i).substr(pos+2) << endl;
 					}
+					/*for (int i = 0; i< port_data.size(); i++) {
+						cout << port_data.at(i) << endl;
+					}*/
+					if (port_data.size() == 2) {
+						for (int i = 0; i < 3; i++)
+							port_data.push_back("NULL");
+					}
+					if (port_data.size() == 3) {
+						for (int i = 0; i < 2; i++)
+							port_data.push_back("NULL");
+					}
+					int mycount = std::count(port_data.begin(), port_data.end(), "NULL");
+					
+					if (mycount == 3) {
+						for (int i = 0; i < port_data.size(); i++) { // values
+							//cout << port_data.at(i) << endl;
+
+							if ((hashGateValue.find(port_data.at(i)) != hashGateValue.end()) && (i<1)) {
+								
+								int x_temp= nangatecell.gate(str1, hashGateValue[port_data[i]], 0, 0, 0, 0);
+								hashGateValue.emplace(port_data[1], x_temp);
+								cout << " matched " <<hashGateValue[port_data[1]] << endl;
+
+							}
+							
+
+						}
+					}
+					
+					
+
+					//nangatecell.gate(str1,)
 				}
 				cout << "next"<< endl;
 			}
