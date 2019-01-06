@@ -858,23 +858,55 @@ int main()
 					}
 					int mycount = std::count(port_data.begin(), port_data.end(), "NULL");
 					
-					if (mycount == 3) {
-						for (int i = 0; i < port_data.size(); i++) { // values
-							//cout << port_data.at(i) << endl;
+					if (mycount == 3) { // values
+						
 
-							if ((hashGateValue.find(port_data.at(i)) != hashGateValue.end()) && (i<1)) {
+							if ((hashGateValue.find(port_data.at(0)) != hashGateValue.end()) ) {
 								
-								int x_temp= nangatecell.gate(str1, hashGateValue[port_data[i]], 0, 0, 0, 0);
+								int x_temp= nangatecell.gate(str1, hashGateValue[port_data[0]], 0, 0, 0, 0);
+
 								hashGateValue.emplace(port_data[1], x_temp);
-								cout << " matched " <<hashGateValue[port_data[1]] << endl;
+								cout << " matched " <<hashGateValue[port_data[1]] << port_data.at(1)<<endl;
 
 							}
-							
+						
+						
+					}
 
-						}
+					if (mycount == 2) {
+						
+						//cout << port_data.at(i) << endl;
+
+							if ((hashGateValue.find(port_data.at(0)) != hashGateValue.end()) && (hashGateValue.find(port_data.at(1)) != hashGateValue.end())) {
+
+								int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], 0, 0, 0);
+								hashGateValue.emplace(port_data[2], x_temp);
+								cout << " matched " << hashGateValue[port_data[2]] << port_data.at(2) << endl;
+
+							}
+
 					}
 					
-					
+					if (mycount == 0) {
+
+						//cout << port_data.at(i) << endl;
+
+						if ((hashGateValue.find(port_data.at(0)) != hashGateValue.end()) && (hashGateValue.find(port_data.at(1)) != hashGateValue.end())
+							&& (hashGateValue.find(port_data.at(2)) != hashGateValue.end())
+							&& (hashGateValue.find(port_data.at(3)) != hashGateValue.end())) 
+						{
+
+							int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], hashGateValue[port_data[3]], 0);
+							hashGateValue.emplace(port_data[4], x_temp);
+							cout << " matched " << hashGateValue[port_data[4]] << port_data.at(4) << endl;
+
+						}
+
+						else {
+							cout << " Error: values are missing" << endl;
+						}
+
+					}
 
 					//nangatecell.gate(str1,)
 				}
