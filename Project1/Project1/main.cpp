@@ -121,7 +121,7 @@ int main()
 			if (read_line.find(ipPort) != std::string::npos)
 			{
 				//std::string::size_type i = line_.find(ipPort);
-				std::cout << "\nINPUT" << endl;
+				//*std::cout << "\nINPUT" << endl;
 				//if (i != std::string::npos)
 				line_.erase(line_.find(port), port.length());
 				line_.erase(line_.find(ipPort), ipPort.length());
@@ -212,7 +212,7 @@ int main()
 					string temp;
 					int found;
 					/*std::vector<int> vect;*/
-					cout << "downto" << endl;
+					//*cout << "downto" << endl;
 					while (!ss.eof()) {
 
 						/* extracting word by word from stream */
@@ -229,7 +229,7 @@ int main()
 					if (vect.size() > 2)  vect.erase(vect.begin() + 2,vect.end()) ;
 					/*for (int x : vect)
 						cout << x << " ";*/
-					cout <<vect.size()<<"yr"<< endl;
+					//*cout <<vect.size()<<"yr"<< endl;
 					vect_size = vect.size();
 					
 					//cout << strNew << "  <= " << endl;
@@ -275,7 +275,7 @@ int main()
 				co = ip_Vec.size();
 				
 
-				cout << "Type in a list of inputs (" << co << " ) " << endl;
+				cout << "\nType in a list of inputs (" << co << " ) " << endl;
 				std::list<std::string>::iterator it = ip_Vec.begin();
 
 
@@ -304,7 +304,7 @@ int main()
 			if (read_line.find(opVec1) != std::string::npos)
 			{
 				vect.clear();
-				std::cout << "\nOUTPUT Vector" << endl;
+				//*std::cout << "\nOUTPUT Vector" << endl;
 				//line_.erase(line_.find(port), port.length());
 				line_.erase(line_.find(opVec1), opVec1.length());
 				line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
@@ -484,7 +484,7 @@ int main()
 			////////////////////////
 			if ((read_line.find("begin") != std::string::npos)) 
 			{
-				std::cout << "\nFunction" << endl;
+				//*std::cout << "\nFunction" << endl;
 				std::string delimiter = "begin";
 				std::string data_ = accumulate(istream_iterator<char>{ file_ >> noskipws }, {}, string{});
 				while ((pos = data_.find(delimiter)) != std::string::npos) {
@@ -533,13 +533,13 @@ int main()
 						unsigned last = output.find_first_of(",");
 						strNew1 = output.substr(first, last - first);
 						strNew1.erase(0, 5);
-						cout <<delimiter4<<" "<< strNew1 << endl;
+						//*cout <<delimiter4<<" "<< strNew1 << endl;
 						if ((pos = output.find(delimiter5)) != std::string::npos) {
 							unsigned first = output.find(delimiter5);
 							unsigned last = output.find_last_of(",");
 							strNew2 = output.substr(first, last - first);
 							strNew2.erase(0, 5);
-							cout <<delimiter5<<" "<< strNew2 << endl;
+						//*	cout <<delimiter5<<" "<< strNew2 << endl;
 						}
 
 					    }
@@ -548,7 +548,7 @@ int main()
 							unsigned last = output.find_first_of(",");
 							strNew3 = output.substr(first, last - first);
 							strNew3.erase(0, 6);
-							cout << delimiter7 << " " << strNew3 << endl;
+							//*cout << delimiter7 << " " << strNew3 << endl;
 							if ((pos = output.find("A2")) != std::string::npos) {
 								//unsigned first = output.find("A2");
 								std::size_t pos = output.find("A2 => ");
@@ -558,7 +558,7 @@ int main()
 								unsigned last = tempstr.find_first_of(",");
 								strNew4 = tempstr.substr(first, last - first);
 								strNew4.erase(0, 6);
-								cout << "A2 =>" << " " << strNew4 << endl;
+							//*	cout << "A2 =>" << " " << strNew4 << endl;
 							}
 							if ((pos = output.find(delimiter8)) != std::string::npos) {
 								tempstr.clear();
@@ -568,14 +568,14 @@ int main()
 								unsigned last = tempstr.find_first_of(",");
 								strNew5 = tempstr.substr(first, last - first);
 								strNew5.erase(0, 6);
-								cout << delimiter8 << " " << strNew5 << endl;
+								//*cout << delimiter8 << " " << strNew5 << endl;
 							}
 							if ((pos = output.find("B2")) != std::string::npos) {
 								unsigned first = output.find("B2 =>");
 								unsigned last = output.find_last_of(",");
 								strNew6 = output.substr(first, last - first);
 								strNew6.erase(0, 6);
-								cout << "B2 => " << " " << strNew6 << endl;
+								//*cout << "B2 => " << " " << strNew6 << endl;
 							}
 
 						}
@@ -766,7 +766,7 @@ int main()
 				//std::cout << mystr << std::endl;
 				//gateData.dataTostore(token);
 			//display the result
-				cout << "\nRESULT" << endl;
+				cout << "\nSORTING RESULT" << endl;
 				
 				
 				for (auto v : sorting_list2)
@@ -777,14 +777,14 @@ int main()
 				for (auto v : sorting_list)
 					std::cout << v << endl;
 				
-				for (int a = 0; a < sorting_list.size(); a++) {// (read_line.find("begin") != std::string::npos));
+				/*for (int a = 0; a < sorting_list.size(); a++) {// (read_line.find("begin") != std::string::npos));
 				
 					//cout << a << sorting_list.get_allocator(a) << endl;
 					auto it1 = std::next(sorting_list.begin(), a);
 
 					std::cout << "3rd element = " << *it1 << std::endl;
 				
-				}
+				}*/
 
 
 				
@@ -834,8 +834,8 @@ int main()
 					str1.erase(remove_if(str1.begin(), str1.end(), isspace), str1.end());
 					
 					
-					cout << str <<endl;
-					cout << str1 << endl;
+					//*cout << str <<endl;
+					//*cout << str1 << endl;
 					//nangatecell.gate(str, str1);
 					std::vector<std::string> x = split(str, ',');
 					std::vector<std::string> port_data;
@@ -865,8 +865,8 @@ int main()
 								
 								int x_temp= nangatecell.gate(str1, hashGateValue[port_data[0]], 0, 0, 0, 0);
 
-								hashGateValue.emplace(port_data[1], x_temp);
-								cout << " matched " <<hashGateValue[port_data[1]] << port_data.at(1)<<endl;
+								hashGateValue.emplace(port_data.at(1), x_temp);
+								//cout << " matched " <<hashGateValue[port_data[1]] << port_data.at(1)<<endl;
 
 							}
 						
@@ -880,8 +880,8 @@ int main()
 							if ((hashGateValue.find(port_data.at(0)) != hashGateValue.end()) && (hashGateValue.find(port_data.at(1)) != hashGateValue.end())) {
 
 								int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], 0, 0, 0);
-								hashGateValue.emplace(port_data[2], x_temp);
-								cout << " matched " << hashGateValue[port_data[2]] << port_data.at(2) << endl;
+								hashGateValue.emplace(port_data.at(2), x_temp);
+								//cout << " matched " << hashGateValue[port_data[2]] << port_data.at(2) <<","<<port_data.at(0)<<port_data.at(1)<< endl;
 
 							}
 
@@ -897,8 +897,8 @@ int main()
 						{
 
 							int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], hashGateValue[port_data[3]], 0);
-							hashGateValue.emplace(port_data[4], x_temp);
-							cout << " matched " << hashGateValue[port_data[4]] << port_data.at(4) << endl;
+							hashGateValue.emplace(port_data.at(4), x_temp);
+							//cout << " matched " << hashGateValue[port_data[4]] << port_data.at(4) << endl;
 
 						}
 
@@ -910,12 +910,23 @@ int main()
 
 					//nangatecell.gate(str1,)
 				}
-				cout << "next"<< endl;
+				//cout << "next"<< endl;
 			}
+
+			
+
+			
+			
 
 		}
 		file_.close();
 
+		////////////////////
+			// Display result
+			/////////////////
+		cout << "\n~~THE OUTPUT RESULTS ARE~~" << endl;
+		for (auto v : op_Vec)
+		cout << v<< " : " << hashGateValue[v] << endl;
 	}
 	
 	else
