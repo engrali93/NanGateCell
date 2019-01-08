@@ -99,4 +99,15 @@ public:
 		
 	return result;
 }
+	string GateType(string gate) {
+		string gate_type[8] = { "OAI22_X1" ,"AOI22_X1" ,"NAND2_X1","NOR2_X1","OR2_X1" ,"XOR2_X1","AND2_X1","INV_X1" };
+		size_t pos = 0;
+		string answer;
+		for (int i = 0; i < 8; i++) {
+			if ((pos = gate_type[i].find(gate)) != std::string::npos) {
+				answer = "YES";
+			}
+		}
+		return answer;
+	}
 };

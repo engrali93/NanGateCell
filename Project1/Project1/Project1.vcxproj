@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="sdf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="circuitParamList.h" />
@@ -125,6 +126,7 @@
     <ClInclude Include="inputVector.h" />
     <ClInclude Include="moreFunc.h" />
     <ClInclude Include="NanGateCell.h" />
+    <ClInclude Include="sdf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

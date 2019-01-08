@@ -18,6 +18,7 @@
 #include "moreFunc.h"
 #include "NanGateCell.h"
 #include <stdio.h>
+#include "sdf.h"
 
 
 
@@ -48,7 +49,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 
 
-
+//void file_location_sdf() {
+//
+//	string loc= "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
+//	sdf(loc);
+//	return;
+//}
 
 
 
@@ -95,6 +101,12 @@ int main()
 	size_t pos = 0;
 	std::string token;
 	//ifstream file_("D:/project arbeit/files/full_adder_vhdl/full_add.vhd");
+	
+	
+	string loc = "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
+	sdf(loc);
+
+
 	ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd");
 	if (file_.is_open())
 	{
@@ -116,7 +128,9 @@ int main()
 			/*transform(read_line.begin(), read_line.end(), read_line.begin(), tolower);
 			cout << read_line << endl;*/
 			
-
+			
+			
+			
 
 			if (read_line.find(ipPort) != std::string::npos)
 			{
@@ -230,6 +244,7 @@ int main()
 					/*for (int x : vect)
 						cout << x << " ";*/
 					//*cout <<vect.size()<<"yr"<< endl;
+					cout << "\n";
 					vect_size = vect.size();
 					
 					//cout << strNew << "  <= " << endl;

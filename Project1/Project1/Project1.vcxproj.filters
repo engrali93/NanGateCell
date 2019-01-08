@@ -18,6 +18,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sdf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="circuitParamList.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NanGateCell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
