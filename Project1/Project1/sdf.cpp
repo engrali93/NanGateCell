@@ -108,6 +108,7 @@ void  sdf(string file_location, vector<string> vhdlFunc_data)
 		std::string line_;
 		vector<string> vhdl = vhdlFunc_data; ;
 		vector<string> vhdl_chip_list;
+		vector<string> iopath;
 		std::string read_line;
 		string jo = file_location;
 		size_t pos = 0;
@@ -148,7 +149,16 @@ void  sdf(string file_location, vector<string> vhdlFunc_data)
 				mystr.erase(remove_if(mystr.begin(), mystr.end(), isspace), mystr.end());
 				vhdl_chip_list.push_back(mystr);
 				vector<string> blockcell=dataVector(fordata_Vec, mystr);
-				cout << mystr<<blockcell.size() << endl;
+				iopath.clear();
+				for (int u = 0; u < blockcell.size(); u++) {
+					
+					if ((pos = blockcell.at(u).find("IOPATH")) != std::string::npos) {
+						iopath.push_back(blockcell.at(u));
+					}
+				}
+				//cout << mystr<<blockcell.size() << endl;
+				for (auto v : iopath) cout << v << endl;
+				cout << "end" << endl;
 			}
 			/*unordered_map<string, string> okl = dataVector(fordata_Vec);
 			cout << okl["(INSTANCE U12)"] << endl;*/
