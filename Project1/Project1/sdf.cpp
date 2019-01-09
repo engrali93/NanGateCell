@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include "NanGateCell.h"
+#include <unordered_map>
 
 
 
@@ -45,25 +46,33 @@ string celltype_name(string line) {
 	return str;
 }
 
-
-std::vector<string> dataVector(vector<string> data) {
+std::vector<string> dataVector(std::vector<string> data, string chipName) {
 	size_t pos=0;
 	string temp_val;
 	NanGateCell nangatecell;
 	vector<string> output_in;
+	vector<string> output_block;
+	string instance;
+	unordered_map<string, string> cell_block;
+	//map<string, std::vector<string>> cell_block2;
 	
 	for (int i = 0; i < data.size(); i++) {
 		//((pos = a.find("port map")) != std::string::npos)
 		/*string str = data.at(i);
 		string str1 = data.at(i+1);*/
-		if (((pos = data.at(i).find("CELL")) != std::string::npos) && ((pos = data.at(i+1).find("CELLTYPE")) != std::string::npos)) {
+		if (((pos = data.at(i).find("CELL")) != std::string::npos) && 
+			((pos = data.at(i+1).find("CELLTYPE")) != std::string::npos) && 
+			((pos = data.at(i + 2).find(chipName)) != std::string::npos)) {
 			temp_val = data.at(i + 1);
+			string temp_val_instance = data.at(i + 2);
 			string new_str=celltype_name(temp_val);
 			//string newStr= regex_match(temp_val);
 			
 			if (nangatecell.GateType(new_str) == "YES") {
+				//output_block.clear();
 				for (int x = i; x < data.size(); x++) {
 					string tempstr = data.at(x);
+					
 					/*tempstr.erase(data.at())*/
 					tempstr.erase(remove_if(tempstr.begin(), tempstr.end(), isspace), tempstr.end());
 					/*if ((!(pos = data.at(i).find("(")) != std::string::npos) && ((pos = data.at(i).find(")")) != std::string::npos)) {
@@ -76,11 +85,15 @@ std::vector<string> dataVector(vector<string> data) {
 					}
 					else {
 						output_in.push_back(data.at(x));
+						output_block.push_back(data.at(x));
+						//cell_block[temp_val_instance].push_back(data.at(x));
 					}
 
 				}
 			}
 		}
+
+		//cell_block.emplace(instance, output_block);
 	}
 
 	
@@ -90,15 +103,18 @@ std::vector<string> dataVector(vector<string> data) {
 }
 	
 
-void  sdf(string file_location)
+void  sdf(string file_location, vector<string> vhdlFunc_data)
 	{
 		std::string line_;
+		vector<string> vhdl = vhdlFunc_data; ;
+		vector<string> vhdl_chip_list;
 		std::string read_line;
 		string jo = file_location;
 		size_t pos = 0;
 		ifstream in_sdf_file(file_location);
 		std::vector<string> fordata_Vec;
-		vector<string> output_cell;
+		
+		unordered_map<string, vector<string>> output_cell_block;
 		if (in_sdf_file.is_open())
 		{
 			while (getline(in_sdf_file, line_))
@@ -118,12 +134,24 @@ void  sdf(string file_location)
 			/*cout << fordata_Vec.at(39) << endl;
 			cout << celltype_name(fordata_Vec.at(97)) << endl;*/
 			//regex_match(fordata_Vec.at(39));
-			output_cell = dataVector(fordata_Vec);
-			for (int i = 0; i < output_cell.size(); i++)
+			//output_cell_block = dataVector(fordata_Vec);
+			/*for (int i = 0; i < output_cell_block.size(); i++)
 			{
-				cout << output_cell.at(i) << endl;
+				vector<string> ok= out
+				
+			}*/
+			//vector<string> ok = output_cell_block["(INSTANCE U12)"];
+			for (int u = 0; u < vhdl.size(); u++) {
+
+
+				std::string mystr = vhdl.at(u).substr(0, vhdl.at(u).find(" :", 0));
+				mystr.erase(remove_if(mystr.begin(), mystr.end(), isspace), mystr.end());
+				vhdl_chip_list.push_back(mystr);
+				vector<string> blockcell=dataVector(fordata_Vec, mystr);
+				cout << mystr<<blockcell.size() << endl;
 			}
-			
+			/*unordered_map<string, string> okl = dataVector(fordata_Vec);
+			cout << okl["(INSTANCE U12)"] << endl;*/
 			in_sdf_file.close();
 		}
 	

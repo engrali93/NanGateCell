@@ -46,7 +46,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 
 
-
+std::vector<string> funcVector_split(string function_data);
 
 
 //void file_location_sdf() {
@@ -95,6 +95,7 @@ int main()
 	std::string delimiter = ",";
 	std::string ip_vector;
 	std::string op_vector;
+	std::string for_sdf;
 	int vect_size;
 	int result_temp;
 	int io = 0;
@@ -104,7 +105,7 @@ int main()
 	
 	
 	string loc = "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
-	sdf(loc);
+	
 
 
 	ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd");
@@ -509,6 +510,7 @@ int main()
 				}
 				//std::cout << data_ << std::endl;
 				std::string mystr = data_.substr(0, data_.find("end", 0));
+				for_sdf = mystr;
 				//std::cout <<"uff" << mystr << std::endl;
 				
 				std::string token_n;
@@ -724,63 +726,15 @@ int main()
 							
 
 						}
-						//else sorting_list2.push_back(output);
-
-						//sorting_list.push_back(output);
-						//cout << " token1 : "<< output << endl;
-						////token_n.erase(remove_if(token_n.begin(), token_n.end(), isspace ), token_n.end());
-						//cout << " token1 : " << token_n << endl;
-						//cout << " token1 :" << token_n << endl;
-						//token.substr(token.find("<=") + 1);
-						//**functionSeparate.push_back(token_n);
-						//std::cout << token1 << " " << token<<std::endl;
-						//**std::string extension = "";
-						//**size_t pos = token.find_last_of(delimiter2);
-						// make sure the poisition is valid
-						/*if (pos != string::npos)
-							extension = token.substr(pos + 1);*/
-						//////////////////
-						// split function
-						/////////////
-						
-						//std::istringstream buf(extension);
-						//std::istream_iterator<std::string> beg(buf), end;
-
-						//std::vector<std::string> listArrayVector(beg, end); // done!
-
-						/*for (auto& s : listArrayVector)
-							std::cout << s << '\n';*/
-						////if (listArrayVector.size() <= 3) {
-						////	std::string gate = listArrayVector[1];
-						////	int val1 = hashGateValue[listArrayVector[0]];
-						////	int val2 = hashGateValue[listArrayVector[2]];
-						////	cout << gate << endl; //"   oooooooo  :" << token_n << endl;
-						////	int new_value = gatefunction.gate(val1, val2, gate);
-						////	//hashGateValue.insert(token_n, new_value);
-						////	hashGateValue.insert_or_assign(token_n, new_value);
-						////	
-						////	//hashGateValue.emplace(token_n, new_value);
-						////	
-						////	cout<< new_value<<endl;
-						//////	cout << hashGateValue["a1"] << "   " << hashGateValue["a2"] << "  " << hashGateValue["a3"] << endl;
-						////}
-						
-						//cout << hashGateValue["a1"] << "   " << hashGateValue["a2"] << "  " << hashGateValue["a3"] << endl;
-						//cout << listArrayVector[1] <<listArrayVector.size() << endl;
-						//cout << "S " << hashGateValue["S"] << "== Cout:   " << hashGateValue["Cout"] << endl;
-						
 
 
-						//cout << extension<<" l" << endl;
 
 					}
 					
-					//gateData.dataTostore(token);
+				
 					
 				}
-				//std::cout << mystr << std::endl;
-				//gateData.dataTostore(token);
-			//display the result
+			
 				cout << "\nSORTING RESULT" << endl;
 				
 				
@@ -942,6 +896,16 @@ int main()
 		cout << "\n~~THE OUTPUT RESULTS ARE~~" << endl;
 		for (auto v : op_Vec)
 		cout << v<< " : " << hashGateValue[v] << endl;
+
+		cout << "\n ~~~~~SDF~~~~~" << endl;
+		
+		vector<string> vhdlfunction_data = funcVector_split(for_sdf);
+		
+
+		
+
+	/*	cout << for_sdf << endl;*/
+		sdf(loc, vhdlfunction_data);
 	}
 	
 	else
@@ -950,4 +914,21 @@ int main()
 		std::cin.get();
 		return 0;
 	
+}
+
+std::vector<string> funcVector_split(string function_data) {
+	std::string s = function_data;
+	std::string delimiter = ";";
+	vector<string> split_list;
+	size_t pos = 0;
+	std::string token;
+	while ((pos = s.find(delimiter)) != std::string::npos) {
+		token = s.substr(0, pos);
+		//std::cout << token << std::endl;
+		s.erase(0, pos + delimiter.length());
+		split_list.push_back(token);
+	}
+	//std::cout << s << std::endl;
+	//split_list.push_back(s);
+	return split_list;
 }
