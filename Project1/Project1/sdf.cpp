@@ -3,10 +3,14 @@
 #include <string>
 #include <fstream>
 #include <regex>
+#include<thread>
+#include<ctime>
 #include <vector>
 #include <algorithm>
 #include "NanGateCell.h"
 #include <unordered_map>
+
+#include <iterator>
 
 
 
@@ -102,6 +106,60 @@ std::vector<string> dataVector(std::vector<string> data, string chipName) {
 
 }
 	
+std::vector<string> sort_data(std::vector<string> for_data) {
+	size_t pos = 0;
+	vector<string> cer_data;
+	for (int i = 0; i < for_data.size(); i++) {
+		if ((pos = for_data.at(i).find("CELL")) != std::string::npos) {
+			for (int u = i; u < for_data.size(); u++)
+			{
+				
+				cer_data.push_back(for_data.at(u));
+				
+			}
+			
+			break;
+		}
+		
+	}
+	
+	return cer_data;
+}
+
+void PrintMatches2(std::string str, std::regex reg) {
+	std::sregex_iterator currentMatch(str.begin(),
+		str.end(), reg);
+
+	// Used to determine if there are any more matches
+	std::sregex_iterator lastMatch;
+
+	// While the current match doesn't equal the last
+	while (currentMatch != lastMatch) {
+		std::smatch match = *currentMatch;
+		std::cout << match.str() << "\n";
+		currentMatch++;
+	}
+	std::cout << std::endl;
+
+}
+
+vector<string> sub_delay(std::vector<string> data) {
+	size_t pos = 0;
+	vector<string> final_vector;
+	
+	for (int i = 0; i < data.size(); i++) {
+		if ((pos = data.at(i).find("IOPATH") != std::string::npos) || (pos = data.at(i).find("INTERCONNECT") != std::string::npos)) {
+			std::string str1 = data.at(i);
+			std::regex reg7("(\[0-9]+\.[0-9]+)");
+			PrintMatches2(str1, reg7);
+		
+
+		}
+
+
+	}
+	return final_vector;
+}
 
 void  sdf(string file_location, vector<string> vhdlFunc_data)
 	{
@@ -115,6 +173,7 @@ void  sdf(string file_location, vector<string> vhdlFunc_data)
 		ifstream in_sdf_file(file_location);
 		std::vector<string> fordata_Vec;
 		
+		
 		unordered_map<string, vector<string>> output_cell_block;
 		if (in_sdf_file.is_open())
 		{
@@ -124,6 +183,15 @@ void  sdf(string file_location, vector<string> vhdlFunc_data)
 			    fordata_Vec.push_back(read_line);
 
 			}
+			//for(auto v: sort_data(fordata_Vec)) cout<<v<<endl;
+			vector<string> newRw = sort_data(fordata_Vec);
+
+			for (auto v : sub_delay(newRw)) cout << v << endl;
+			/*std::string str7 = "(INTERCONNECT U10/ZN U5/B (0.018:0.024:0.024) (0.021:0.022:0.022))";
+			std::regex reg7("(\[0-9]+\.[0-9]+)");
+			PrintMatches2(str7, reg7);
+			*/
+			
 			/*for (int i = 0; i < fordata_Vec.size(); i++) {
 				cout << "shukar"<<fordata_Vec.at(i) << endl;*/
 			////	//string ok=printvector(fordata_Vec);
@@ -146,6 +214,7 @@ void  sdf(string file_location, vector<string> vhdlFunc_data)
 
 
 				std::string mystr = vhdl.at(u).substr(0, vhdl.at(u).find(" :", 0));
+				
 				mystr.erase(remove_if(mystr.begin(), mystr.end(), isspace), mystr.end());
 				vhdl_chip_list.push_back(mystr);
 				vector<string> blockcell=dataVector(fordata_Vec, mystr);
@@ -157,8 +226,8 @@ void  sdf(string file_location, vector<string> vhdlFunc_data)
 					}
 				}
 				//cout << mystr<<blockcell.size() << endl;
-				for (auto v : iopath) cout << v << endl;
-				cout << "end" << endl;
+				//--for (auto v : iopath) cout << v << endl;
+				//--cout << "end" << endl;
 			}
 			/*unordered_map<string, string> okl = dataVector(fordata_Vec);
 			cout << okl["(INSTANCE U12)"] << endl;*/
