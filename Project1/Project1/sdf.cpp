@@ -9,7 +9,8 @@
 #include <algorithm>
 #include "NanGateCell.h"
 #include <unordered_map>
-
+#include <ostream>
+#include <sstream>
 #include <iterator>
 
 
@@ -132,13 +133,38 @@ void PrintMatches2(std::string str, std::regex reg) {
 
 	// Used to determine if there are any more matches
 	std::sregex_iterator lastMatch;
-
+	vector<string> time;
+	vector<string> temp;
 	// While the current match doesn't equal the last
 	while (currentMatch != lastMatch) {
 		std::smatch match = *currentMatch;
-		std::cout << match.str() << "\n";
+		//std::cout << match.str() << "\n";
 		currentMatch++;
+		string tempVal = match.str();
+		cout << tempVal << endl;
+		temp.push_back(tempVal);
 	}
+	int vecInt = temp.size();
+	cout << "time"<<endl;
+	for (int i = 0; i < (vecInt/2); i++) {
+		//char *strr = temp.at(i);
+		double n1 = std::stod(temp.at(i));
+		
+		double n2 = std::stod(temp.at(i + 3));
+		double a = n1 - n2;
+		double b = 4.23 - 1.11;
+		//cout << a << "  here  " <<endl;
+		ostringstream str11;
+		str11 << a;
+		string s = str11.str();
+		//cout << s << "double" << endl;
+		
+		//cout << s << "  string" << endl;
+		
+		time.push_back(s);
+	}
+	cout << "time"<<endl;
+	for (auto v:time) cout << v<<endl;
 	std::cout << std::endl;
 
 }
