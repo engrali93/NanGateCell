@@ -77,11 +77,14 @@ int main()
 	unordered_map<string, int, int,int> hashFunction3in;
 	unordered_map<string, string, string, string> hashsorting;
 	unordered_map<string, int> hash_Temp;
+	unordered_map<string, string> pin_port;
 	std::list<string> sort_acc_ip;
 	std::list<string> functionSeparate;
 	
 	std::vector<int> Vector;
 	std::vector<int> vect;
+	std::vector<string> all_possible_ports;
+	std::vector<string> instance_str;
 	std::list<string> result;
 	std::list<string> op_result;
 	std::list<string> ip_Vec;
@@ -156,6 +159,9 @@ int main()
 					inputList.iplist(token);//right one
 					result.push_back(token);
 					ip_Vec.push_back(token);
+					
+					
+					
 				}
 				//std::cout << line_ << std::endl;
 				//result.push_back(line_);
@@ -164,6 +170,8 @@ int main()
 				inputList.iplist(line_);
 				result.push_back(line_);
 				ip_Vec.push_back(line_);
+				
+				
 				/*std::list<std::string>::iterator it = result.begin();
 				std::advance(it, 4);
 				std::cout << "3rd element = " << *it << std::endl;
@@ -267,6 +275,7 @@ int main()
 						str << token << "(" << a << ")";
 						ip_vector = str.str();
 						ip_Vec.push_back(ip_vector);
+						all_possible_ports.push_back(ip_vector);
 						//cout << ip_vector<< endl;
 					}
 				}
@@ -276,6 +285,7 @@ int main()
 					str << line_ << "(" << a << ")";
 					ip_vector = str.str();
 					ip_Vec.push_back(ip_vector);
+					all_possible_ports.push_back(ip_vector);
 					//cout << ip_vector << endl;
 				}
 				//inputList.iplist(line_);
@@ -476,12 +486,14 @@ int main()
 					line_.erase(0, pos + delimiter.length());
 					//std::cout << line_ << std::endl;
 					result.push_back(token);
+					
 					//listing("wire", token);
 					wireList.wirelist(token);
 				}
 				line_.erase(remove_if(line_.begin(), line_.end(), isspace), line_.end());
 				std::cout << line_ << std::endl;
 				result.push_back(line_);
+				
 				wireList.wirelist(token);
 				//listing("wire", line_);
 				/*std::list<std::string>::iterator it = result.begin();
@@ -537,12 +549,15 @@ int main()
 					if ((pos = token.find(delimiter1)) != std::string::npos) {
 						token_n = token.substr(0, pos);
 						string output = token_n.substr(token_n.find_last_of(':') + 1);
+						instance_str.push_back(token_n);
 						string strNew1;
 						string strNew2;
 						string strNew3;
 						string strNew4;
 						string strNew5;
 						string strNew6;
+						string strNew7;
+						string strNew8;
 						string tempstr;
 						
 						if ((pos = output.find(delimiter4)) != std::string::npos) {
@@ -550,13 +565,37 @@ int main()
 						unsigned last = output.find_first_of(",");
 						strNew1 = output.substr(first, last - first);
 						strNew1.erase(0, 5);
+						//*pin_port.emplace(strNew1, "A");
 						//*cout <<delimiter4<<" "<< strNew1 << endl;
 						if ((pos = output.find(delimiter5)) != std::string::npos) {
 							unsigned first = output.find(delimiter5);
 							unsigned last = output.find_last_of(",");
 							strNew2 = output.substr(first, last - first);
 							strNew2.erase(0, 5);
+							//*pin_port.emplace(strNew2, "B");
 						//*	cout <<delimiter5<<" "<< strNew2 << endl;
+						}
+						if ((pos = output.find(delimiter9)) != std::string::npos) {
+							unsigned first = output.find(delimiter9);
+							unsigned last = output.find_last_of(",");
+							strNew8 = output.substr(first, last - first);
+							strNew8.erase(0, 5);
+							//cout << strNew8.size();
+							strNew8.erase(strNew8.size() - 1, 1);
+							
+							//pin_port.emplace(strNew8, "ZN");
+							//*cout << delimiter9 << " " << strNew8 << endl;
+						}
+
+						if ((pos = output.find(delimiter6)) != std::string::npos) {
+							unsigned first = output.find(delimiter6);
+							unsigned last = output.find_last_of(",");
+							strNew7 = output.substr(first, last - first);
+							strNew7.erase(0, 5);
+							//cout << strNew7.size();
+							strNew7.erase(strNew7.size()-1, 1);
+							//pin_port.emplace(strNew7, "Z");
+								//*cout <<delimiter6<<" "<< strNew7 << endl;
 						}
 
 					    }
@@ -565,6 +604,7 @@ int main()
 							unsigned last = output.find_first_of(",");
 							strNew3 = output.substr(first, last - first);
 							strNew3.erase(0, 6);
+							//*pin_port.emplace(strNew3, "A1");
 							//*cout << delimiter7 << " " << strNew3 << endl;
 							if ((pos = output.find("A2")) != std::string::npos) {
 								//unsigned first = output.find("A2");
@@ -575,7 +615,8 @@ int main()
 								unsigned last = tempstr.find_first_of(",");
 								strNew4 = tempstr.substr(first, last - first);
 								strNew4.erase(0, 6);
-							//*	cout << "A2 =>" << " " << strNew4 << endl;
+								//*pin_port.emplace(strNew4, "A2");
+								//*cout << "A2 =>" << " " << strNew4 << endl;
 							}
 							if ((pos = output.find(delimiter8)) != std::string::npos) {
 								tempstr.clear();
@@ -585,6 +626,7 @@ int main()
 								unsigned last = tempstr.find_first_of(",");
 								strNew5 = tempstr.substr(first, last - first);
 								strNew5.erase(0, 6);
+								//*pin_port.emplace(strNew5, "B1");
 								//*cout << delimiter8 << " " << strNew5 << endl;
 							}
 							if ((pos = output.find("B2")) != std::string::npos) {
@@ -592,9 +634,20 @@ int main()
 								unsigned last = output.find_last_of(",");
 								strNew6 = output.substr(first, last - first);
 								strNew6.erase(0, 6);
-								//*cout << "B2 => " << " " << strNew6 << endl;
+								//*pin_port.emplace(strNew6, "B2");
+								//cout << "B2 => " << " " << strNew6 << endl;
 							}
-
+							if ((pos = output.find(delimiter9)) != std::string::npos) {
+								unsigned first = output.find(delimiter9);
+								unsigned last = output.find_last_of(",");
+								strNew8 = output.substr(first, last - first);
+								strNew8.erase(0, 5);
+								//cout << strNew8.size();
+								strNew8.erase(strNew8.size() - 1, 1);
+								
+								//pin_port.emplace(strNew8, "ZN");
+								//*cout <<delimiter9<<" "<< strNew8 << endl;
+							}
 						}
 					/*	std::list<string> error;
 						std::list<string> error1;
@@ -679,20 +732,7 @@ int main()
 							else if ((foundC == true && foundD == true) && (foundE == true || foundF == true)) {
 								sorting_list.push_back(output);
 
-								//	for (int a = 0; a < ip_Vec.size(); a++){
-							//		auto it1 = std::next(ip_Vec.begin(), a);
-							//		cout << "lk" << *it1 << endl;
-							//	if (output.find(*it1) != std::string::npos) {
-							//		error.push_back(output);
-							//		cout << " poo" << output << endl;
-							//		//sorting_list2.push_front(output);
-							//	}
-							//	else { error1.push_back(output); }
-							//	
-							//	
-							//}
-							//	if (error.empty()) { sorting_list2.push_back(output); }
-							//	if (error.size() > 0) for (auto v : error) sorting_list2.push_front(v);
+							
 							}
 							else if ((foundC == true || foundD == true) && (foundE == true && foundF == true)) {
 								sorting_list.push_back(output); // 3 known entities
@@ -763,25 +803,7 @@ int main()
 			///////////////////////
 			// Gate
 			//////////////////////////////////////////
-			
-			//for (int a = 0; a < sorting_list.size(); a++) {// (read_line.find("begin") != std::string::npos));
 
-			//		//cout << a << sorting_list.get_allocator(a) << endl;
-			//	auto it1 = std::next(sorting_list.begin(), a);
-
-			//	//std::cout << "3rd element = " << *it1 << std::endl;
-
-			//	std::string asd;
-			//	asd = *it1;
-			//	if ((pos = asd.find("port map")) != std::string::npos) {
-			//		//std::size_t position = a.find(":");
-			//		std::string str = "We think in generalities, but we live in details.";
-			//		std::size_t position = asd.find(" : ");
-			//		cout << "position" << position << endl;
-			//	}
-			//
-			//
-			//}
 
 			
 			
@@ -897,6 +919,16 @@ int main()
 		for (auto v : op_Vec)
 		cout << v<< " : " << hashGateValue[v] << endl;
 
+		
+		
+		for (auto v : result) all_possible_ports.push_back(v);
+		//for (auto v : instance_str) cout<<v<<"success";
+		//for (auto v : all_possible_ports) cout << v << endl;
+		//for (auto v : all_possible_ports) cout << v << " : " << hashGateValue[v] << endl;
+		
+		//for (auto v : all_possible_ports) cout << v << " : " << pin_port[v] << endl;
+		
+
 		cout << "\n ~~~~~SDF~~~~~" << endl;
 		
 		vector<string> vhdlfunction_data = funcVector_split(for_sdf);
@@ -905,7 +937,8 @@ int main()
 		
 
 	/*	cout << for_sdf << endl;*/
-		sdf(loc, vhdlfunction_data);
+		
+		sdf(loc, vhdlfunction_data,all_possible_ports,hashGateValue,instance_str);
 	}
 	
 	else

@@ -12,6 +12,7 @@
 #include <ostream>
 #include <sstream>
 #include <iterator>
+#include <unordered_map>
 
 
 
@@ -127,7 +128,29 @@ std::vector<string> sort_data(std::vector<string> for_data) {
 	return cer_data;
 }
 
-void PrintMatches2(std::string str, std::regex reg) {
+std::vector<string> sort_cell(std::vector<string> for_data, int j) {
+	size_t pos = 0;
+	vector<string> cer_data;
+	cer_data.push_back(for_data.at(j));
+	for (int i = j+1; i < for_data.size(); i++) { 
+		
+		if (((pos = for_data.at(i).find("CELL")) != std::string::npos) && ((pos = for_data.at(i).find("CELLTYPE")) == std::string::npos)) {
+			break;
+		}
+		cer_data.push_back(for_data.at(i));
+
+
+			}
+
+			
+		
+
+	
+
+	return cer_data;
+}
+
+vector<string> PrintMatches1(std::string str, std::regex reg) {
 	std::sregex_iterator currentMatch(str.begin(),
 		str.end(), reg);
 
@@ -141,63 +164,235 @@ void PrintMatches2(std::string str, std::regex reg) {
 		//std::cout << match.str() << "\n";
 		currentMatch++;
 		string tempVal = match.str();
-		cout << tempVal << endl;
+		//cout << tempVal <<"sssss"<< endl;
 		temp.push_back(tempVal);
 	}
 	int vecInt = temp.size();
-	cout << "time"<<endl;
+	string stra1;
+	string stra2;
+	vector<string> temp2;
+	
+	stra1 = "(" + temp.at(0) + ":" + temp.at(1) + ":" + temp.at(2) + ")";
+	stra2 = "(" + temp.at(3) + ":" + temp.at(4) + ":" + temp.at(5) + ")";
+	temp2.push_back(stra1);
+	temp2.push_back(stra2);
+	
+	//cout << "time"<<endl;
+	
+	//cout << "time"<<endl;
+	
+
+	//cout << finalTime << " success" << endl;
+	//for (auto v:time) cout << v<<endl;
+	//std::cout << std::endl;
+	return temp2;
+}
+string PrintMatches2(std::string str, std::regex reg) {
+	std::sregex_iterator currentMatch(str.begin(),
+		str.end(), reg);
+
+	// Used to determine if there are any more matches
+	std::sregex_iterator lastMatch;
+	vector<string> time;
+	vector<string> temp;
+	// While the current match doesn't equal the last
+	while (currentMatch != lastMatch) {
+		std::smatch match = *currentMatch;
+		//std::cout << match.str() << "\n";
+		currentMatch++;
+		string tempVal = match.str();
+		//cout << tempVal << endl;
+		temp.push_back(tempVal);
+	}
+	int vecInt = temp.size();
+	//cout << "time"<<endl;
 	for (int i = 0; i < (vecInt/2); i++) {
 		//char *strr = temp.at(i);
 		double n1 = std::stod(temp.at(i));
 		
 		double n2 = std::stod(temp.at(i + 3));
-		double a = n1 - n2;
-		double b = 4.23 - 1.11;
-		//cout << a << "  here  " <<endl;
-		ostringstream str11;
-		str11 << a;
-		string s = str11.str();
-		//cout << s << "double" << endl;
-		
-		//cout << s << "  string" << endl;
-		
+		double a = n1 - n2; //substract time
+		string s;
+		if (n1 == n2) {
+			s = "0.000";
+			
+		}
+		else {
+			ostringstream str11;
+			str11 << a;
+			s = str11.str();
+			//cout << s << "double" << endl;
+
+			//cout << s << "  string" << endl;
+		}
 		time.push_back(s);
 	}
-	cout << "time"<<endl;
-	for (auto v:time) cout << v<<endl;
-	std::cout << std::endl;
-
+	//cout << "time"<<endl;
+	string finalTime;
+	
+		finalTime =  time.at(0)+":"+time.at(1)+":"+time.at(2);
+	
+	//cout << finalTime << " success" << endl;
+	//for (auto v:time) cout << v<<endl;
+	//std::cout << std::endl;
+	return finalTime;
 }
 
-vector<string> sub_delay(std::vector<string> data) {
+std::string sub_delay(std::string data) {
 	size_t pos = 0;
-	vector<string> final_vector;
+	string final_time;
 	
-	for (int i = 0; i < data.size(); i++) {
-		if ((pos = data.at(i).find("IOPATH") != std::string::npos) || (pos = data.at(i).find("INTERCONNECT") != std::string::npos)) {
-			std::string str1 = data.at(i);
+	//for (int i = 0; i < data.size(); i++) {
+		//if ((pos = data.at(i).find("IOPATH") != std::string::npos) || (pos = data.at(i).find("INTERCONNECT") != std::string::npos)) {
+		if ((pos = data.find("IOPATH") != std::string::npos) || (pos = data.find("INTERCONNECT") != std::string::npos)) {
+
+			std::string str1 = data;
 			std::regex reg7("(\[0-9]+\.[0-9]+)");
-			PrintMatches2(str1, reg7);
+			final_time =PrintMatches2(str1, reg7);
 		
 
-		}
+		//}
 
 
 	}
-	return final_vector;
+	return final_time;
 }
 
-void  sdf(string file_location, vector<string> vhdlFunc_data)
+vector<string> PrintMatches3(std::string str, std::regex reg) {
+	std::sregex_iterator currentMatch(str.begin(),
+		str.end(), reg);
+
+	// Used to determine if there are any more matches
+	std::sregex_iterator lastMatch;
+	vector<string> time;
+	vector<string> temp;
+	// While the current match doesn't equal the last
+	while (currentMatch != lastMatch) {
+		std::smatch match = *currentMatch;
+		//std::cout << match.str() << "\n";
+		currentMatch++;
+		string tempVal = match.str();
+		//cout << tempVal <<"sssss"<< endl;
+		temp.push_back(tempVal);
+	}
+
+
+	return temp;
+}
+string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_data) {
+	string IOPath;
+	string str;
+	string str_final;
+	size_t pos=0;
+	size_t posa = 0;
+	size_t posb = 0;
+	string cond;
+	vector<string> splited;
+	vector<string> key;
+	string value;
+	std::string token1;
+	string instance;
+	
+	unordered_map<string, string> temp_data_type;
+	
+	for (int i = 0; i< single_cell_data.size(); i++)
 	{
+		if ((pos = single_cell_data.at(i).find("INSTANCE") != std::string::npos)) {
+			std::size_t pos1 = single_cell_data.at(i).find_last_of("INSTANCE ");
+			std::size_t pos2 = single_cell_data.at(i).find("INSTANCE ");
+			
+			str = single_cell_data.at(i).erase(0, pos1+1);
+			str = str.substr(0, str.size() - 1);
+			instance = str;
+			for (int j = 0; j < vhdl_data.size(); j++) {
+				if ((pos = vhdl_data.at(j).find(str) != std::string::npos)) {
+					if ((posa = vhdl_data.at(j).find("COND") != std::string::npos)) 
+					{ cond = "y"; }
+					else { cond = "n"; }
+					string str1 = vhdl_data.at(j);
+					std::size_t pos3 = vhdl_data.at(j).find_last_of("map");
+					
+					string str2 = str1.erase(0, pos3+1);
+					str2.erase(remove_if(str2.begin(), str2.end(), isspace), str2.end());
+					//cout << str2 << endl;
+					str2 = str2.erase(0, 1);
+					str2 = str2.erase(str2.size() - 1, str2.size());
+					
+					//cout << str2 << endl;
+					string delimiter = ",";
+					
+					std::string token;
+					while ((pos = str2.find(delimiter)) != std::string::npos) {
+						token = str2.substr(0, pos);
+						splited.push_back(token);
+						str2.erase(0, pos + delimiter.length());
+					}
+					
+					splited.push_back(str2);
+					string delimiter2 = "=>";
+					for (int k = 0;k<splited.size();k++) {
+						string tempstr1 = splited.at(k);
+						
+						
+						size_t pos4 = tempstr1.find(delimiter2);
+							token1 = tempstr1.substr(0, pos4);
+							
+							value= tempstr1.erase(0, pos4 + delimiter2.length());
+							temp_data_type.emplace(token1,value);
+							key.push_back(token1);
+						
+					}
+					//for (auto v : splited2) cout << v << endl;
+				}
+
+			}
+		}
+	
+		if ((posb = single_cell_data.at(i).find("IOPATH") != std::string::npos) && (posb = single_cell_data.at(i).find("COND") == std::string::npos)) {
+			string temp1=single_cell_data.at(i);
+			size_t place = single_cell_data.at(i).find_last_of("IOPATH");
+			temp1.erase(0, place);
+			temp1.erase(temp1.size() - 1, temp1.size());
+			std::regex reg7("\[A-Z]+");
+			vector<string> temp_replace = PrintMatches3(temp1, reg7);
+			IOPath = temp1;
+			for (auto v : temp_replace) {
+				string a = v;
+				std::regex target(a);
+				std::string replacement = temp_data_type[a];
+				IOPath = std::regex_replace(IOPath, target, replacement);
+				
+
+			} 
+
+			
+		}
+	
+	
+	}
+
+
+	str_final = instance + " : " + IOPath;
+	
+	return str_final;
+}
+void  sdf(string file_location, vector<string> vhdlFunc_data,vector<string> All_ports, unordered_map<string, int> ports_values,vector<string> instance_str)
+	{
+	//for (auto v : instance_str) cout << v << "shai";
+	//for (auto v : All_ports) cout << v << " : " << ports_values[v] << endl; //all values
 		std::string line_;
 		vector<string> vhdl = vhdlFunc_data; ;
 		vector<string> vhdl_chip_list;
 		vector<string> iopath;
 		std::string read_line;
+		int count = 0;
 		string jo = file_location;
 		size_t pos = 0;
 		ifstream in_sdf_file(file_location);
 		std::vector<string> fordata_Vec;
+		std::vector<string> interconnect_table;
+		std::vector<string> cell_table;
+		std::vector<string> single_cell;
 		
 		
 		unordered_map<string, vector<string>> output_cell_block;
@@ -206,36 +401,74 @@ void  sdf(string file_location, vector<string> vhdlFunc_data)
 			while (getline(in_sdf_file, line_))
 			{
 				read_line = line_;
-			    fordata_Vec.push_back(read_line);
+				
 
+				if ((pos = read_line.find("IOPATH") != std::string::npos) || (pos = read_line.find("INTERCONNECT") != std::string::npos)) {
+					string temp_time= sub_delay(read_line);// final time
+					
+					//std::regex reg7("\\(\[0-9]+\.\[0-9]+\:\[0-9]+\.\[0-9]+\:\[0-9]+\.\[0-9]+\\)");
+					std::regex reg7("\[0-9]+\.[0-9]+");
+					vector<string> temp_replace= PrintMatches1(read_line, reg7);
+					string rem_str1 = temp_replace.at(0);
+					string rem_str2 = temp_replace.at(1);
+					
+					std::regex target("("+rem_str1+")");
+					std::regex target2("(" + rem_str2 + ")");
+					std::string replacement = temp_time;
+					std::string replacement2 = "";
+					std::string s2 = std::regex_replace(read_line, target, replacement);
+					std::string s3 = std::regex_replace(s2, target2, replacement2);
+					std::size_t pos = s3.find_last_of(temp_time);      // position of "live" in str
+					
+					std::string str3 = s3.erase(pos+1,3); // final embedded time
+					
+					fordata_Vec.push_back(str3);
+					if (pos = read_line.find("INTERCONNECT") != std::string::npos) {
+						interconnect_table.push_back(str3); //for saving all the interconnect
+					}
+
+				}
+				else {
+					fordata_Vec.push_back(read_line);
+
+				}
 			}
 			//for(auto v: sort_data(fordata_Vec)) cout<<v<<endl;
 			vector<string> newRw = sort_data(fordata_Vec);
-
-			for (auto v : sub_delay(newRw)) cout << v << endl;
-			/*std::string str7 = "(INTERCONNECT U10/ZN U5/B (0.018:0.024:0.024) (0.021:0.022:0.022))";
-			std::regex reg7("(\[0-9]+\.[0-9]+)");
-			PrintMatches2(str7, reg7);
-			*/
 			
-			/*for (int i = 0; i < fordata_Vec.size(); i++) {
-				cout << "shukar"<<fordata_Vec.at(i) << endl;*/
-			////	//string ok=printvector(fordata_Vec);
-			////	cout << dataVector(fordata_Vec).size() << "pp" << endl;;
-			////	vector<string> ol = dataVector(fordata_Vec);
-			////	
-			////	//cout << ok.size() << endl;
-			//}
-			/*cout << fordata_Vec.at(39) << endl;
-			cout << celltype_name(fordata_Vec.at(97)) << endl;*/
-			//regex_match(fordata_Vec.at(39));
-			//output_cell_block = dataVector(fordata_Vec);
-			/*for (int i = 0; i < output_cell_block.size(); i++)
-			{
-				vector<string> ok= out
-				
-			}*/
+			//for (auto v :newRw) cout << v << endl; // main data
+			for (int i = 0; i < newRw.size(); i++) {
+				if ((pos = newRw.at(i).find("CELL") != std::string::npos) && (pos = newRw.at(i).find("CELLTYPE") == std::string::npos)) {
+					count++;
+				}
+				if (count > 1) {
+					cell_table.push_back(newRw.at(i));
+				}
+			}
+			cout << " cellllllllllllllll" << endl;
+			for (auto v : cell_table) cout << v << endl;
+			//for (auto v : interconnect_table) cout << v << endl; //display of interconnect
+
+			for (int i = 0; i < cell_table.size(); i++) {
+
+				if (((pos = cell_table.at(i).find("CELL")) != std::string::npos) && ((pos = cell_table.at(i).find("CELLTYPE")) == std::string::npos)) {
+					single_cell=sort_cell(cell_table, i);
+					break;
+				}
+			}
+			cout << " single cell " << endl;
+			for (auto v : single_cell) cout << v << endl;
+			cout << single_cell_value(instance_str, single_cell) << "okiloiko" << endl;
+			//for(auto v: sub_delay(newRw)) cout<<v << endl;
+			
+			//for (auto v : cell_table) cout << v << endl;
+
+
 			//vector<string> ok = output_cell_block["(INSTANCE U12)"];
+
+			//###########################################
+			//###########################################
+
 			for (int u = 0; u < vhdl.size(); u++) {
 
 
