@@ -296,10 +296,19 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 	string cond;
 	vector<string> splited;
 	vector<string> key;
+	vector<string> temp_replace;
+	vector<string> final_timing_delay;
 	string value;
+	unordered_map<string, int> current_temp;
+	unordered_map<string, string> confirm12;
 	std::string token1;
 	string instance;
-	
+	vector<string> mycheck;
+	vector<string> mychecknew;
+	mycheck.push_back("A1");
+	mycheck.push_back("A2");
+	mycheck.push_back("B1");
+	mycheck.push_back("B2");
 	unordered_map<string, string> temp_data_type;
 	
 	for (int i = 0; i< single_cell_data.size(); i++)
@@ -319,7 +328,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 					string str1 = vhdl_data.at(j);
 					std::size_t pos3 = vhdl_data.at(j).find("map");
 				
-					cout << str1.length() << endl;
+					//cout << str1.length() << endl;
 					string str2 = str1.erase(0, pos3);
 					str2.erase(remove_if(str2.begin(), str2.end(), isspace), str2.end());
 					string strn22 = str2.erase(0, 3);
@@ -339,15 +348,17 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 					}
 					
 					splited.push_back(str2);
-					string delimiter2 = " =>";
+					string delimiter2 = "=>";
 					for (int k = 0;k<splited.size();k++) {
-						string tempstr1 = splited.at(k);
+						string tempstr1 = splited.at(k);// instance string
 						//cout << tempstr1 << endl;
 						
 						size_t pos4 = tempstr1.find(delimiter2);
 							token1 = tempstr1.substr(0, pos4);
 							
 							value= tempstr1.erase(0, pos4 + delimiter2.length());
+							
+							//cout << value << " " << ports_values[value] << endl;// value value
 							temp_data_type.emplace(token1,value);
 							key.push_back(token1);
 						
@@ -393,26 +404,107 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 			temp1.erase(remove_if(temp1.begin(), temp1.end(), isspace), temp1.end());
 			std::regex reg7("\[A-Z]+\[0-9]*");
 			std::regex reg8("\[1]\[']\[b]\[0-1]");
-			vector<string> temp_replace = PrintMatches3(temp1, reg7);
+			temp_replace = PrintMatches3(temp1, reg7);
 			vector<string> temp_replace1 = PrintMatches3(temp1, reg8);
 			std::replace(temp_replace1.begin(), temp_replace1.end(), std::string("1'b0"), std::string("0"));
 			std::replace(temp_replace1.begin(), temp_replace1.end(), std::string("1'b1"), std::string("1"));
-			unordered_map<string, int> current_temp;
+			current_temp.clear();
 			for (int l = 0; l < temp_replace.size(); l++) {
-				current_temp.emplace(temp_replace.at(l), stoi(temp_replace1.at(l)));
-				//cout << temp_replace.at(l) << " " << temp_replace1.at(l) << endl;
+				//current_temp.emplace(temp_replace.at(l), stoi(temp_replace1.at(l)));
+				
+					int val1 = stoi(temp_replace1.at(l));
+					string val2 = temp_replace1.at(l);
+					string temp_str = temp_replace.at(l);
+
+					current_temp.emplace(temp_str, val1);
+
+					//cout << temp_replace.at(l) << " " << temp_replace1.at(l) << endl; // decoded values of sdf
+
+				
+				//cout << temp_replace.at(l) <<"ioi"<< endl;
 			}
-
-
-			for (auto v : key) cout << v << endl;
-			cout << " next line \n" << endl;
 			
+			
+			//cout << " VHDL"  << endl;
+			//for (auto v : temp_replace) cout << v <<" "<< ports_values[temp_data_type[v]] << endl;// vhdl port values
+			
+			
+			
+			if (temp_replace.size() <= 2) {
+				
+					for (int i = 0; i < temp_replace.size(); i++) {
+						if (temp_replace.at(i) != "Z") {
+						int match_1 = current_temp[temp_replace.at(i)];
+						int match_2 = ports_values[temp_data_type[temp_replace.at(i)]];
+						if (match_1 == match_2) {
+							cout << temp_replace.at(i) << " " << current_temp[temp_replace.at(i)] << " " << ports_values[temp_data_type[temp_replace.at(i)]] << endl;
 
+							cout << "================================================" << endl;
+							cout << "matched" << endl;
+							cout << instance << " : " << ioplaceNew<< endl;
+							cout << "================================================" << endl;
+							cout << endl;
+						}
+						else {
+							//cout << "NOT match" << endl;
+						}
+					}
+				}
+				}
+
+			if (temp_replace.size() > 2) {
+
+				for (int i = 0; i < 1; i++) {
+					if (temp_replace.at(i) != "Z") {
+						int match_1n = current_temp[temp_replace.at(i)];
+						int match_1a = ports_values[temp_data_type[temp_replace.at(i)]];
+
+						int match_2n = current_temp[temp_replace.at(i+1)];
+						int match_2a = ports_values[temp_data_type[temp_replace.at(i+1)]];
+
+						int match_3n = current_temp[temp_replace.at(i+2)];
+						int match_3a = ports_values[temp_data_type[temp_replace.at(i+2)]];
+						if ((match_1n == match_1a) && (match_2n == match_2a) && (match_3a== match_3n)) {
+							cout << temp_replace.at(i) << " " << current_temp[temp_replace.at(i)] << " " << ports_values[temp_data_type[temp_replace.at(i)]] << endl;
+							cout << temp_replace.at(i + 1) << " " << current_temp[temp_replace.at(i + 1)] << " " << ports_values[temp_data_type[temp_replace.at(i + 1)]] << endl;
+							cout << temp_replace.at(i + 2) << " " << current_temp[temp_replace.at(i + 2)] << " " << ports_values[temp_data_type[temp_replace.at(i + 2)]] << endl;
+
+									cout << "================================================" << endl;
+									cout << "matched" << endl;
+									cout << instance << " : " << ioplaceNew << endl;
+									size_t iop = ioplaceNew.find(" ZN");
+									string ionew = ioplaceNew;
+									ionew.erase(iop, ionew.length());
+									ionew.erase(0, 1);
+									//########################33
+									std::vector<string>::iterator pend;
+									pend = std::remove(mycheck.begin(), mycheck.end(), ionew);
+									for (std::vector<string>::iterator p = mycheck.begin(); p != pend; ++p)
+										std::cout << ' ' << *p; std::cout << '\n';
+
+
+									final_timing_delay.push_back(instance + " : " + ioplaceNew);
+									cout << "================================================" << endl;
+									cout << endl;
+							
+						}
+						else {
+							//cout << "NOT match" << endl;
+						}
+					}
+					
+
+				}
+			}
+			
 		}
 	
-	
+		
 	}
-
+	//for (auto v : key) cout << ports_values[temp_data_type[v]] << endl;
+	/*cout << "ololo" << temp_replace.size() << endl;
+	for (auto v : temp_replace) cout << v << endl;*/
+	
 	
 	str_final = instance + " : " + IOPath;
 	
