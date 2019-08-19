@@ -94,8 +94,55 @@ public:
 				result = 1;
 			}
 		}
+		if (gate == "OAI21_X1") {
 
+			if ((A1 == 0 && A2 == 0) || (B1 == 0 )) {
+				result = 1;
+			}
+			else {
+				result = 0;
+			}
+		}
 
+		if (gate == "AOI21_X1") {
+
+			if ((A1 == 0 || A2 == 0) && (B1 == 0)) {
+				result = 1;
+			}
+			else {
+				result = 0;
+			}
+		}
+		if (gate == "XNOR2_X1") {
+
+			if (A1 == A2 ) {
+				result = 1;
+			}
+			else {
+				result = 0;
+			}
+		}
+
+		if (gate == "FA_X1") {
+			int count = A1 + A2 + B1;
+			cout <<"lib : "<< count << endl;
+			if (count == 1) {
+				cout << "liba : " << count << endl;
+				result = 1;
+			}
+			if (count == 2) {
+				cout << "libb : " << count << endl;
+				result = 2;
+			}
+			if (count == 3) {
+				cout << "libc : " << count << endl;
+				result = 3;
+			}
+			if(count == 0) {
+				cout << "libd : " << count << endl;
+				result = 0;
+			}
+		}
 		
 	return result;
 }

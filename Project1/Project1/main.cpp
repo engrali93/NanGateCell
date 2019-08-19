@@ -48,13 +48,55 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 std::vector<string> funcVector_split(string function_data);
 
+string spliting_port(string input_string) {
+	std::string ipPort = "in std_logic;";
+	
+	std::string port = "port(";
+	std::string line_ = input_string;
+	line_.erase(line_.find(port), port.length());
+	line_.erase(line_.find(ipPort), ipPort.length());
+	line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
+	
+	return line_;
 
-//void file_location_sdf() {
-//
-//	string loc= "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
-//	sdf(loc);
-//	return;
-//}
+}
+
+
+string spliting_input_port(string input_str) {
+	std::string line_ = input_str;
+	std::string ipVec1 = "in std_logic_vector";
+
+	line_.erase(line_.find(ipVec1), ipVec1.length());
+	line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
+	std::string::size_type firstQuotePos = line_.find_first_of("(");
+	std::string::size_type secondQuotePos = line_.find_first_of(")");
+
+	return line_;
+}
+
+string spliting_output_port(string output_string) {
+	std::string line_ = output_string;
+	std::string opVec1 = "out std_logic_vector";
+	line_.erase(line_.find(opVec1), opVec1.length());
+	line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
+
+	return line_;
+}
+
+string spliting_signal(string signal) {
+	std::string line_ = signal;
+	std::string signalm = "signal";
+	std::string signal_1 = ": std_logic;";
+	//std::string::size_type i = line_.find(ipPort);
+	
+	//if (i != std::string::npos)
+	line_.erase(line_.find(signalm), signalm.length());
+	line_.erase(line_.find(signal_1), signal_1.length());
+	line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
+	
+	return line_;
+}
+
 
 
 
@@ -111,7 +153,10 @@ int main()
 	
 
 
-	ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd");
+	//ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd"); // 2 BIT
+	//ifstream file_("D:/project arbeit/files/2-bit/4-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=4.vhd"); // 4 BIT
+	ifstream file_("D:/project arbeit/files/2-bit/8-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=8.vhd"); // 8 bit
+	
 	if (file_.is_open())
 	{
 		while (getline(file_, line_))
@@ -138,13 +183,16 @@ int main()
 
 			if (read_line.find(ipPort) != std::string::npos)
 			{
+				line_=spliting_port(line_);
 				//std::string::size_type i = line_.find(ipPort);
 				//*std::cout << "\nINPUT" << endl;
 				//if (i != std::string::npos)
-				line_.erase(line_.find(port), port.length());
+				
+				/*line_.erase(line_.find(port), port.length());
 				line_.erase(line_.find(ipPort), ipPort.length());
 				line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
-				
+				*/
+
 				//std::cout << line_ << '\n';
 				while ((pos = line_.find(delimiter)) != std::string::npos) 
 				{
@@ -159,6 +207,7 @@ int main()
 					inputList.iplist(token);//right one
 					result.push_back(token);
 					ip_Vec.push_back(token);
+					//cout << token;
 					
 					
 					
@@ -170,45 +219,7 @@ int main()
 				inputList.iplist(line_);
 				result.push_back(line_);
 				ip_Vec.push_back(line_);
-				
-				
-				/*std::list<std::string>::iterator it = result.begin();
-				std::advance(it, 4);
-				std::cout << "3rd element = " << *it << std::endl;
-				
-				for (auto v : result)
-					std::cout << v << "\n";*/
-				//listing ();
-				/*int co;
-				co= inputList.size();
-				inputList.iplistdisplay();*/
-				//cout << "here" << co << endl;
-				//inputVectorNew.myVector;
-				/*cout << "Type in a list of inputs (" << co << " ) " << endl;
-				std::list<std::string>::iterator it = result.begin();*/
-
-				//auto it1 = std::next(result.begin(), 2);
-
-				//std::cout << "3rd element = " << *it1 << std::endl;
-
-////////#########################################
-
-				//int input = 0;
-				//for (int i = 0; i < co; i++)
-				//{
-				//	auto it1 = std::next(result.begin(), i);
-				//	cin >> input;
-				//	Vector.push_back(input);
-				//	//cout << result.front(i) << "ioi" << endl;
-				//	hashGateValue.emplace(*it1, input);
-				//}
-				//cin.get();
-				//
-				//inputVectorNew.myVector(co);
-				
-				
-				
-				
+			
 			}
 
 			
@@ -222,10 +233,15 @@ int main()
 			{
 				std::cout << "\nINPUT Vector" << endl;
 				//line_.erase(line_.find(port), port.length());
-				line_.erase(line_.find(ipVec1), ipVec1.length());
+				
+				/*line_.erase(line_.find(ipVec1), ipVec1.length());
 				line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
+				*/
+				line_ = spliting_input_port(line_);
 				std::string::size_type firstQuotePos = line_.find_first_of("(");
 				std::string::size_type secondQuotePos = line_.find_first_of(")");
+				
+
 				if (firstQuotePos != std::string::npos)
 				{
 					string strNew = line_.substr(firstQuotePos, secondQuotePos);
@@ -244,18 +260,24 @@ int main()
 						/* Checking the given word is integer or not */
 						if (stringstream(temp) >> found)
 							cout << found << " ";
-						vect.push_back(found);
 
+						vect.push_back(found);
+						//cout << vect.size();
 						/* To save from space at the end of string */
 						temp = "";
 					}
+					//cout << "for" << vect.size();
+					//int str = vect.at(0);
+					
+					
 					if (vect.size() > 2)  vect.erase(vect.begin() + 2,vect.end()) ;
 					/*for (int x : vect)
 						cout << x << " ";*/
 					//*cout <<vect.size()<<"yr"<< endl;
 					cout << "\n";
-					vect_size = vect.size();
-					
+					//vect_size = vect.size();
+					vect_size = vect.at(0)+1; //calulating bit
+					//cout << vect_size;
 					//cout << strNew << "  <= " << endl;
 					line_.erase(firstQuotePos,secondQuotePos );
 				}
@@ -264,12 +286,10 @@ int main()
 				{
 					token = line_.substr(0, pos);
 					line_.erase(0, pos + delimiter.length());
-					//std::cout << line_ << std::endl;
+					
 					token.erase(remove_if(token.begin(), token.end(), isspace), token.end());
 					inputList.iplist(token);//right one
-					//result.push_back(token);
-					//ip_Vec.push_back(token);
-					//cout << token << endl;
+					
 					for (int a = 0; a < vect_size; a++) {
 						std::stringstream str;
 						str << token << "(" << a << ")";
@@ -288,18 +308,16 @@ int main()
 					all_possible_ports.push_back(ip_vector);
 					//cout << ip_vector << endl;
 				}
-				//inputList.iplist(line_);
-				//result.push_back(line_);
-				//ip_Vec.push_back(line_);
-				//cout << line_ << endl;
+				
 
 
 				for (auto v : ip_Vec)
 					std::cout << v << "\n";
 
 				int co;
-				co = ip_Vec.size();
 				
+				co = ip_Vec.size();
+				cout << co;
 
 				cout << "\nType in a list of inputs (" << co << " ) " << endl;
 				std::list<std::string>::iterator it = ip_Vec.begin();
@@ -330,10 +348,12 @@ int main()
 			if (read_line.find(opVec1) != std::string::npos)
 			{
 				vect.clear();
+				line_ = spliting_output_port(line_);
 				//*std::cout << "\nOUTPUT Vector" << endl;
 				//line_.erase(line_.find(port), port.length());
-				line_.erase(line_.find(opVec1), opVec1.length());
+				/*line_.erase(line_.find(opVec1), opVec1.length());
 				line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
+				*/
 				std::string::size_type firstQuotePos = line_.find_first_of("(");
 				std::string::size_type secondQuotePos = line_.find_first_of(")");
 				if (firstQuotePos != std::string::npos)
@@ -364,9 +384,9 @@ int main()
 					if (vect.size() > 2)  vect.erase(vect.begin() + 2, vect.end());
 					/*for (int x : vect)
 						cout << x << " ";*/
-					//cout << vect.size() << "or" << endl;
-					vect_size = vect.size();
-
+					cout << vect.size() << "or" << endl;
+					//vect_size = vect.size();
+					vect_size = vect.at(0) + 1;
 					//cout << strNew << "  <= " << endl;
 					line_.erase(firstQuotePos, secondQuotePos);
 				}
@@ -435,47 +455,32 @@ int main()
 					token.erase(remove_if(token.begin(), token.end(), isspace), token.end());
 					std::cout << token << std::endl;
 					line_.erase(0, pos + delimiter.length());
-					//std::cout << line_ << std::endl;
-					//result.push_back(token);
-					//listing("output", token);
-					//op_result.push_back(token);
-					//outputList.oplist(token);
+					
 					op_Vec.push_back(token);
 				}
 				line_.erase(remove_if(line_.begin(), line_.end(), isspace), line_.end());
 				op_Vec.push_back(line_);
-				//std::cout << line_ << std::endl;
-				//result.push_back(line_);
-				//outputList.oplist(token);
-				//op_result.push_back(line_);
-				//listing("output", line_);
-				/*std::list<std::string>::iterator it = result.begin();
-				std::advance(it, 4);
-				std::cout << "3rd element = " << *it << std::endl;
 
-				for (auto v : result)
-					std::cout << v << "\n";*/
-					//listing ();
 				for (auto v : op_Vec)
 					std::cout << v << "\n";
 			}
 
 
 			//////////////////////////
-			//exreating wire or signal
+			//extracting wire or signal
 			////////////////////////////
 
 			if ((read_line.find("signal") != std::string::npos) || (read_line.find(": std_logic") != std::string::npos))
 			{
-				std::string signal = "signal";
-				std::string signal_1 = ": std_logic;";
+				//*std::string signal = "signal";
+				//*std::string signal_1 = ": std_logic;";
 				//std::string::size_type i = line_.find(ipPort);
 				std::cout << "\nSIGNAL PIN" << '\n';
 				//if (i != std::string::npos)
-				line_.erase(line_.find(signal), signal.length());
-				line_.erase(line_.find(signal_1), signal_1.length());
-				line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
-
+				//*line_.erase(line_.find(signal), signal.length());
+				//*line_.erase(line_.find(signal_1), signal_1.length());
+				//*line_.erase(std::remove(line_.begin(), line_.end(), ':'), line_.end());
+				line_ = spliting_signal(line_);
 				//std::cout << line_ << '\n';
 				while ((pos = line_.find(delimiter)) != std::string::npos)
 				{
@@ -810,6 +815,7 @@ int main()
 			for (auto v : sorting_list) {
 				std::string a;
 				a = v;
+
 				if ((pos = a.find("port map")) != std::string::npos) {
 					//std::size_t position = a.find(":");
 					//a.erase(remove_if(a.begin(), a.end(), isspace), a.end());
@@ -831,10 +837,11 @@ int main()
 					std::vector<std::string> x = split(str, ',');
 					std::vector<std::string> port_data;
 					//cout << "vector size " << x.size();
+					//for (auto v : x)  cout << v << endl;
 					for (int i = 0; i < (int)x.size(); i++) {
 						size_t pos = x.at(i).find("=>");
 						port_data.push_back(x.at(i).substr(pos + 2));
-						//cout << x.at(i).substr(pos+2) << endl;
+						cout << x.at(i).substr(pos+2) << endl;
 					}
 					/*for (int i = 0; i< port_data.size(); i++) {
 						cout << port_data.at(i) << endl;
@@ -847,7 +854,24 @@ int main()
 						for (int i = 0; i < 2; i++)
 							port_data.push_back("NULL");
 					}
+					if (port_data.size() == 4) {
+						for (int i = 0; i < 1; i++)
+							port_data.push_back("NULL");
+					}
+					string special_gate;
+					
+					string gate_type = " FA_X1 , HA_X1 ";
+					if ((port_data.size() == 5) && ((pos = gate_type.find(str1)) != std::string::npos)) {
+						
+							special_gate= "yes";
+					}
+					//cout << special_gate << endl;
+					//cout << port_data.size();
+
+					//*for (auto v : port_data)cout << v << endl;
 					int mycount = std::count(port_data.begin(), port_data.end(), "NULL");
+					cout <<"\n"<< mycount << endl;
+					
 					
 					if (mycount == 3) { // values
 						
@@ -857,7 +881,7 @@ int main()
 								int x_temp= nangatecell.gate(str1, hashGateValue[port_data[0]], 0, 0, 0, 0);
 
 								hashGateValue.emplace(port_data.at(1), x_temp);
-								//cout << " matched " <<hashGateValue[port_data[1]] << port_data.at(1)<<endl;
+								cout << " matched " <<hashGateValue[port_data[1]] << port_data.at(1)<<endl;
 
 							}
 						
@@ -872,16 +896,71 @@ int main()
 
 								int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], 0, 0, 0);
 								hashGateValue.emplace(port_data.at(2), x_temp);
-								//cout << " matched " << hashGateValue[port_data[2]] << port_data.at(2) <<","<<port_data.at(0)<<port_data.at(1)<< endl;
+								cout << " matched " << hashGateValue[port_data[2]] << port_data.at(2) <<","<<port_data.at(0)<<port_data.at(1)<< endl;
 
 							}
 
 					}
-					
-					if (mycount == 0) {
+
+					if (mycount == 1) {
 
 						//cout << port_data.at(i) << endl;
 
+						if ((hashGateValue.find(port_data.at(0)) != hashGateValue.end()) && (hashGateValue.find(port_data.at(1)) != hashGateValue.end()) && (hashGateValue.find(port_data.at(2)) != hashGateValue.end())) {
+
+							int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], 0, 0);
+							hashGateValue.emplace(port_data.at(3), x_temp);
+							cout << " matched " << hashGateValue[port_data[3]] << port_data.at(3) << "," << port_data.at(0) << port_data.at(1) << port_data.at(2)<< endl;
+
+						}
+
+					}
+					if ((mycount == 0) && (special_gate=="yes")) {
+
+						
+
+						if ((hashGateValue.find(port_data.at(0)) != hashGateValue.end()) && (hashGateValue.find(port_data.at(1)) != hashGateValue.end())
+							&& (hashGateValue.find(port_data.at(2)) != hashGateValue.end())	)
+						{
+
+							int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], 0, 0);
+							cout << "1xtemp" << x_temp << endl;
+							if(x_temp== 1){
+								cout << "xtemp" << x_temp << endl;
+								hashGateValue.emplace(port_data.at(3), 0);
+								hashGateValue.emplace(port_data.at(4), 1);
+							}
+							if (x_temp == 2) {
+								hashGateValue.emplace(port_data.at(3), 1);
+								hashGateValue.emplace(port_data.at(4), 0);
+							}
+							if (x_temp == 3) {
+								hashGateValue.emplace(port_data.at(3), 1);
+								hashGateValue.emplace(port_data.at(4), 1);
+							}
+							else{
+								hashGateValue.emplace(port_data.at(3), 0);
+								hashGateValue.emplace(port_data.at(4), 0);
+							}
+							
+							cout << " matched " << hashGateValue[port_data[3]] << port_data.at(3) << hashGateValue[port_data[4]] << port_data.at(4)<< endl;
+
+						}
+
+						
+
+					}
+					if ((mycount == 0) && (special_gate.empty())) {
+
+						/*cout << port_data.at(0) << endl;
+						cout << port_data.at(1) << endl;
+						cout << port_data.at(2) << endl;
+						cout << port_data.at(3) << endl;*/
+						/*cout << hashGateValue[port_data.at(0)] << endl;
+						cout << hashGateValue[port_data.at(1)] << endl;
+						cout << hashGateValue[port_data.at(2)] << endl;
+						cout << hashGateValue[port_data.at(3)] << endl;
+*/
 						if ((hashGateValue.find(port_data.at(0)) != hashGateValue.end()) && (hashGateValue.find(port_data.at(1)) != hashGateValue.end())
 							&& (hashGateValue.find(port_data.at(2)) != hashGateValue.end())
 							&& (hashGateValue.find(port_data.at(3)) != hashGateValue.end())) 
@@ -889,7 +968,7 @@ int main()
 
 							int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], hashGateValue[port_data[3]], 0);
 							hashGateValue.emplace(port_data.at(4), x_temp);
-							//cout << " matched " << hashGateValue[port_data[4]] << port_data.at(4) << endl;
+							cout << " matched " << hashGateValue[port_data[4]] << port_data.at(4) << endl;
 
 						}
 
