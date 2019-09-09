@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iterator>
 #include <unordered_map>
+#include <windows.h>
 
 
 
@@ -43,6 +44,8 @@ void regex_match(string line) {
 
 	
 }
+
+
 
 string celltype_name(string line) {
 	string str = line;
@@ -150,10 +153,14 @@ std::vector<string> sort_cell(std::vector<string> for_data, int j) {
 	return cer_data;
 }
 
-vector<string> PrintMatches1(std::string str, std::regex reg) {
-	std::sregex_iterator currentMatch(str.begin(),
-		str.end(), reg);
 
+
+
+vector<string> PrintMatches1(std::string str, std::regex reg) {
+	
+	
+	std::sregex_iterator currentMatch(str.begin(),str.end(), reg);
+	
 	// Used to determine if there are any more matches
 	std::sregex_iterator lastMatch;
 	vector<string> time;
@@ -286,6 +293,87 @@ vector<string> PrintMatches3(std::string str, std::regex reg) {
 
 	return temp;
 }
+
+
+unordered_map<string, string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::list<string>op_vectors) {
+	//cout << interconnect_string.size();
+	//cout << "okokok";
+	int co = 5;
+	std::string valnet;
+	size_t pos = 0;
+	std::regex reg7("\[0-9]+\.[0-9]+");
+	unordered_map<string, string> interconnect_hashmap;
+	for (int i = 0; i < interconnect_string.size(); i++) {
+		std::string value = interconnect_string.at(i);
+		value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
+		value.erase(0, 18);
+		
+
+		std::sregex_iterator currentMatch(value.begin(), value.end(), reg7);
+
+		// Used to determine if there are any more matches
+		std::sregex_iterator lastMatch;
+		vector<string> time;
+		vector<string> temp;
+		// While the current match doesn't equal the last
+		while (currentMatch != lastMatch) {
+			std::smatch match = *currentMatch;
+			//std::cout << match.str() << "\n";
+			currentMatch++;
+			string tempVal = match.str();
+			//cout << tempVal <<"ooooo"<< endl;
+			temp.push_back(tempVal);
+		}
+		std::string time_temp = "(" + temp.at(0) + ":" + temp.at(1) + ":" + temp.at(2) + ")";
+		
+		std::size_t posa = value.find_first_of(" ");
+		std::string net = value.substr(0, posa);
+
+		if ((pos = net.find("/") != std::string::npos)) {
+			pos = net.find("/");
+			std::string instance = net.substr(0, pos);
+			std::string outval = net.substr(pos + 1, net.length() - pos);
+			for (int k = 0; k < vhdl_function.size(); k++) {
+				if ((pos = vhdl_function.at(k).find(instance) != std::string::npos)) {
+					std::size_t posb = vhdl_function.at(k).find_last_of(outval + " => ");
+					valnet = vhdl_function.at(k).substr(posb + 1);
+					valnet.erase(std::remove(valnet.begin(), valnet.end(), ')'), valnet.end());
+					//cout << "XXXXXX" + valnet << endl;
+					if (std::find(op_vectors.begin(), op_vectors.end(), valnet) == op_vectors.end()) {
+						//cout << "not present ===" + valnet <<" tim : "+time_temp<< endl;
+						interconnect_hashmap.emplace(valnet, time_temp);
+						
+					}
+					else {
+						
+					}
+						
+					
+					
+				}
+			}
+		}
+		else {
+			valnet = net;
+			//cout << "pppp===" + valnet;
+			if (interconnect_hashmap.find(valnet) == interconnect_hashmap.end()) {
+				interconnect_hashmap.emplace(valnet, time_temp);
+				//cout <<"pppp==="+ valnet;
+			}
+			
+			
+		}
+		
+		//cout << " check it " + value << endl;
+	}
+	//cout << "ok size : " + interconnect_hashmap.size() << endl;
+	for (int j = 0; j < All_ports.size(); j++) {
+		cout << All_ports.at(j) << " : " << interconnect_hashmap[All_ports.at(j)] << endl;
+
+	}
+	return interconnect_hashmap;
+}
+
 string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_data, unordered_map<string, int> ports_values) {
 	string IOPath;
 	string str;
@@ -441,7 +529,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 
 							cout << "================================================" << endl;
 							cout << "matched" << endl;
-							cout << instance << " : " << ioplaceNew<< endl;
+							cout << instance << " :k " << ioplaceNew<< endl;
 							cout << "================================================" << endl;
 							cout << endl;
 						}
@@ -510,7 +598,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 	
 	return str_final;
 }
-void  sdf(string file_location, vector<string> vhdlFunc_data,vector<string> All_ports, unordered_map<string, int> ports_values,vector<string> instance_str)
+void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports, unordered_map<string, int> ports_values,vector<string> instance_str,std::list<string> opVectors)
 	{
 	//for (auto v : instance_str) cout << v << "shai";
 	//for (auto v : All_ports) cout << v << " : " << ports_values[v] << endl; //all values
@@ -520,9 +608,10 @@ void  sdf(string file_location, vector<string> vhdlFunc_data,vector<string> All_
 		vector<string> iopath;
 		std::string read_line;
 		int count = 0;
-		string jo = file_location;
+		//string jo = file_location;
 		size_t pos = 0;
-		ifstream in_sdf_file(file_location);
+		//std::string sdffile =  "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
+		ifstream in_sdf_file(sdffile);
 		std::vector<string> fordata_Vec;
 		std::vector<string> interconnect_table;
 		std::vector<string> cell_table;
@@ -567,6 +656,7 @@ void  sdf(string file_location, vector<string> vhdlFunc_data,vector<string> All_
 
 				}
 			}
+			unordered_map<string, string> interconnect_net_time = interconnect_value(interconnect_table, vhdl,All_ports,opVectors);
 			//for(auto v: sort_data(fordata_Vec)) cout<<v<<endl;
 			vector<string> newRw = sort_data(fordata_Vec);
 			
@@ -589,7 +679,7 @@ void  sdf(string file_location, vector<string> vhdlFunc_data,vector<string> All_
 					single_cell=sort_cell(cell_table, i);
 					
 					cout << " single cell \n" << endl;
-					for (auto v : single_cell) cout << v << endl;
+					//for (auto v : single_cell) cout << v << endl;
 					cout<< single_cell_value(instance_str, single_cell,ports_values);// << "okiloiko" << endl;
 					
 				}
@@ -637,7 +727,7 @@ void  sdf(string file_location, vector<string> vhdlFunc_data,vector<string> All_
 
 			std::cout << "file is not open" << '\n';
 			
-			//return ;
+			//return 0 ;
 	}
 
 	

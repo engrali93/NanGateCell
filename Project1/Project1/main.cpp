@@ -43,8 +43,26 @@ std::vector<std::string> split(const std::string &s, char delim) {
 	return elems;
 }
 
+std::vector<std::vector<int> > truthtable(const unsigned num) {
+	
+	const unsigned n = num;
+	std::vector<std::vector<int> > output(n, std::vector<int>(1 << n));
+
+	unsigned num_to_fill = 1U << (n - 1);
+	for (unsigned col = 0; col < n; ++col, num_to_fill >>= 1U)
+	{
+		for (unsigned row = num_to_fill; row < (1U << n); row += (num_to_fill * 2))
+		{
+			std::fill_n(&output[col][row], num_to_fill, 1);
+		}
+	}
 
 
+	return output;
+}
+
+
+int main();
 
 std::vector<string> funcVector_split(string function_data);
 
@@ -153,9 +171,9 @@ int main()
 	
 
 
-	//ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd"); // 2 BIT
+	ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd"); // 2 BIT
 	//ifstream file_("D:/project arbeit/files/2-bit/4-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=4.vhd"); // 4 BIT
-	ifstream file_("D:/project arbeit/files/2-bit/8-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=8.vhd"); // 8 bit
+	//ifstream file_("D:/project arbeit/files/2-bit/8-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=8.vhd"); // 8 bit
 	
 	if (file_.is_open())
 	{
@@ -318,7 +336,20 @@ int main()
 				
 				co = ip_Vec.size();
 				cout << co;
-
+				///////////////////////////
+				/*std::vector<std::vector<int> > truthtable_output = truthtable(co);
+				// These loops just print out the results, nothing more.
+				for (unsigned x = 0; x < (1 << co); ++x)
+				{
+					for (unsigned y = 0; y < co; ++y)
+					{
+						
+						std::cout << truthtable_output[y][x] << " ";
+						
+					}
+					std::cout << std::endl;
+				}
+				*/
 				cout << "\nType in a list of inputs (" << co << " ) " << endl;
 				std::list<std::string>::iterator it = ip_Vec.begin();
 
@@ -1017,14 +1048,17 @@ int main()
 
 	/*	cout << for_sdf << endl;*/
 		
-		sdf(loc, vhdlfunction_data,all_possible_ports,hashGateValue,instance_str);
+		sdf(loc, vhdlfunction_data,all_possible_ports,hashGateValue,instance_str,op_Vec	);
+		
+		
+
 	}
 	
 	else
 	
 		std::cout << "file is not open" << '\n';
 		std::cin.get();
-		return 0;
+		return 0 ;
 	
 }
 
