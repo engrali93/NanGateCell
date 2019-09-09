@@ -367,10 +367,10 @@ unordered_map<string, string> interconnect_value(std::vector<string> interconnec
 		//cout << " check it " + value << endl;
 	}
 	//cout << "ok size : " + interconnect_hashmap.size() << endl;
-	for (int j = 0; j < All_ports.size(); j++) {
+	/*for (int j = 0; j < All_ports.size(); j++) {
 		cout << All_ports.at(j) << " : " << interconnect_hashmap[All_ports.at(j)] << endl;
 
-	}
+	}*/
 	return interconnect_hashmap;
 }
 
@@ -391,12 +391,18 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 	unordered_map<string, string> confirm12;
 	std::string token1;
 	string instance;
+	string instance_str;
 	vector<string> mycheck;
 	vector<string> mychecknew;
 	mycheck.push_back("A1");
 	mycheck.push_back("A2");
 	mycheck.push_back("B1");
 	mycheck.push_back("B2");
+	mycheck.push_back("ZN");
+	std::string A1 = instance + " : A1 ZN (0.000:0.000:0.000)";
+	std::string A2 = instance + " : A2 ZN (0.000:0.000:0.000)";
+	std::string B1 = instance + " : B1 ZN (0.000:0.000:0.000)";
+	std::string B2 = instance + " : B2 ZN (0.000:0.000:0.000)";
 	unordered_map<string, string> temp_data_type;
 	
 	for (int i = 0; i< single_cell_data.size(); i++)
@@ -408,6 +414,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 			str = single_cell_data.at(i).erase(0, pos1+1);
 			str = str.substr(0, str.size() - 1);
 			instance = str;
+			instance_str = str;
 			for (int j = 0; j < vhdl_data.size(); j++) {
 				if ((pos = vhdl_data.at(j).find(str) != std::string::npos)) {
 					if ((posa = vhdl_data.at(j).find("COND") != std::string::npos)) 
@@ -445,7 +452,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 							token1 = tempstr1.substr(0, pos4);
 							
 							value= tempstr1.erase(0, pos4 + delimiter2.length());
-							
+							//cout << "value + token 1===+++++" << value + token1 << endl;
 							//cout << value << " " << ports_values[value] << endl;// value value
 							temp_data_type.emplace(token1,value);
 							key.push_back(token1);
@@ -465,11 +472,15 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 			std::regex reg7("\[A-Z]+");
 			vector<string> temp_replace = PrintMatches3(temp1, reg7);
 			IOPath = temp1;
+			
 			for (auto v : temp_replace) {
 				string a = v;
+				
 				std::regex target(a);
 				std::string replacement = temp_data_type[a];
+				
 				IOPath = std::regex_replace(IOPath, target, replacement);
+				
 				
 
 			} 
@@ -503,7 +514,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 					int val1 = stoi(temp_replace1.at(l));
 					string val2 = temp_replace1.at(l);
 					string temp_str = temp_replace.at(l);
-
+					//cout << "olo---" + temp_str << val1 << endl;
 					current_temp.emplace(temp_str, val1);
 
 					//cout << temp_replace.at(l) << " " << temp_replace1.at(l) << endl; // decoded values of sdf
@@ -513,9 +524,9 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 			}
 			
 			
-			//cout << " VHDL"  << endl;
-			//for (auto v : temp_replace) cout << v <<" "<< ports_values[temp_data_type[v]] << endl;// vhdl port values
-			
+			cout << " VHDL"  << endl;
+			for (auto v : temp_replace) cout << v <<" "<< ports_values[temp_data_type[v]] << endl;// vhdl port values
+			cout << "--------------------------";
 			
 			
 			if (temp_replace.size() <= 2) {
@@ -541,6 +552,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 				}
 
 			if (temp_replace.size() > 2) {
+				
 
 				for (int i = 0; i < 1; i++) {
 					if (temp_replace.at(i) != "Z") {
@@ -560,6 +572,28 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 									cout << "================================================" << endl;
 									cout << "matched" << endl;
 									cout << instance << " : " << ioplaceNew << endl;
+									size_t pok = 0;
+									if (pok = ioplaceNew.find("A1") != std::string::npos) {
+										
+										A1.clear();
+										A1 = " :" + ioplaceNew;
+									}
+									if (pok = ioplaceNew.find("A2") != std::string::npos) {
+										
+										A2.clear();
+										A2 = " :" + ioplaceNew;
+									}
+									if (pok = ioplaceNew.find("B1") != std::string::npos) {
+										
+										B1.clear();
+										B1 =  " :" + ioplaceNew;
+									}
+									if (pok = ioplaceNew.find("B2") != std::string::npos) {
+										
+										B2.clear();
+										B2 =  " :" + ioplaceNew;
+									}
+
 									size_t iop = ioplaceNew.find(" ZN");
 									string ionew = ioplaceNew;
 									ionew.erase(iop, ionew.length());
@@ -574,10 +608,14 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 									final_timing_delay.push_back(instance + " : " + ioplaceNew);
 									cout << "================================================" << endl;
 									cout << endl;
+									
 							
 						}
 						else {
-							//cout << "NOT match" << endl;
+							cout << "NOT match" << endl;
+							cout << temp_replace.at(i) << " " << current_temp[temp_replace.at(i)] << " " << ports_values[temp_data_type[temp_replace.at(i)]] << endl;
+							cout << temp_replace.at(i + 1) << " " << current_temp[temp_replace.at(i + 1)] << " " << ports_values[temp_data_type[temp_replace.at(i + 1)]] << endl;
+							cout << temp_replace.at(i + 2) << " " << current_temp[temp_replace.at(i + 2)] << " " << ports_values[temp_data_type[temp_replace.at(i + 2)]] << endl;
 						}
 					}
 					
@@ -589,6 +627,10 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 	
 		
 	}
+	cout <<instance_str+ A1 << endl;
+	cout << instance_str + A2 << endl;
+	cout << instance_str + B1 << endl;
+	cout << instance_str + B2 << endl;
 	//for (auto v : key) cout << ports_values[temp_data_type[v]] << endl;
 	/*cout << "ololo" << temp_replace.size() << endl;
 	for (auto v : temp_replace) cout << v << endl;*/
