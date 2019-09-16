@@ -273,8 +273,7 @@ std::string sub_delay(std::string data) {
 }
 
 vector<string> PrintMatches3(std::string str, std::regex reg) {
-	std::sregex_iterator currentMatch(str.begin(),
-		str.end(), reg);
+	std::sregex_iterator currentMatch(str.begin(),str.end(), reg);
 
 	// Used to determine if there are any more matches
 	std::sregex_iterator lastMatch;
@@ -294,6 +293,171 @@ vector<string> PrintMatches3(std::string str, std::regex reg) {
 	return temp;
 }
 
+vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
+	//vector<string> opVec;
+	//for (auto v : output) opVec.push_back(v);
+	vector<string> duplicate;
+	vector<string> temp;
+	string value = str;
+	string recheck = str;
+	size_t pos = 0;
+	//size_t place = 0;
+	string A1;
+	string A2;
+	string B1;
+	string B2;
+	string ZN;
+	string A;
+	string B;
+	string Z;
+	string instance;
+	int ZNN;
+	int x;
+
+		
+	for ( x = 0; x <= vhdl.size(); x++) {
+		//cout << "Value " << value << endl;
+		if ((pos = vhdl.at(x).find("A1") != std::string::npos)) {
+			string strNew = vhdl.at(x);
+			string strIns = vhdl.at(x);
+			//cout << strNew << endl;
+				size_t place = strNew.find("A1 => ");
+				
+				strNew=strNew.erase(0, place+6);
+				place = strNew.find(",");
+				A1 = strNew.substr(0, place);
+				
+				place = strNew.find("A2 => ");
+				strNew = strNew.erase(0, place+6);
+				place = strNew.find(",");
+				A2 = strNew.substr(0, place);
+
+				place = strNew.find("B1 => ");
+				strNew = strNew.erase(0, place+6);
+				place = strNew.find(",");
+				B1 = strNew.substr(0, place);
+
+				place = strNew.find("B2 => ");
+				strNew = strNew.erase(0, place + 6);
+				place = strNew.find(",");
+				B2 = strNew.substr(0, place);
+
+				place = strNew.find("ZN => ");
+				strNew = strNew.erase(0, place+6);
+				ZN = strNew.substr(0,strNew.size()-1);
+				Z = "";
+
+				place = strIns.find(" :");
+				instance = strIns.substr(0, place );
+				instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
+				//cout << instance << endl;
+				ZNN = 1;
+				/*cout << "A1 =" << A1 << endl;
+				cout << "B1 =" << B1 << endl;
+				cout << "A2 =" << A2 << endl;
+				
+				cout << "B2 =" << B2 << endl;
+				cout << "ZN =" << ZN << endl;
+				cout << "-----------------------------" << endl;*/
+							
+		}
+		if ((pos = vhdl.at(x).find("A") != std::string::npos) && (pos = vhdl.at(x).find("B") == std::string::npos)) {
+
+			string strNew = vhdl.at(x);
+			string strIns = vhdl.at(x);
+			//cout << strNew << endl;
+			size_t place = strNew.find("A => ");
+
+			strNew = strNew.erase(0, place + 5);
+			place = strNew.find(",");
+			A = strNew.substr(0, place);
+
+			place = strNew.find("ZN => ");
+			strNew = strNew.erase(0, place + 5);
+			ZN = strNew.substr(0, strNew.size() - 1);
+			Z = "";
+
+			place = strIns.find(" :");
+			instance = strIns.substr(0, place);
+			instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
+			//cout << instance << endl;
+			ZNN = 1;
+
+			/*cout << "A =" << A << endl;
+			cout << "ZN =" << ZN << endl;
+			cout << "-----------------------------" << endl;*/
+		}
+		if ((pos = vhdl.at(x).find("A") != std::string::npos) && (pos = vhdl.at(x).find("B =>") != std::string::npos)) {
+			string strNew = vhdl.at(x);
+			string strIns = vhdl.at(x);
+			//cout << strNew << endl;
+			size_t place = strNew.find("A => ");
+			
+			strNew = strNew.erase(0, place + 5);
+			place = strNew.find(",");
+			A = strNew.substr(0, place);
+
+			place = strNew.find("B => ");
+			strNew = strNew.erase(0, place + 5);
+			place = strNew.find(",");
+			B = strNew.substr(0, place);
+			cout << B << endl;
+			place = strNew.find("Z => ");
+			strNew = strNew.erase(0, place + 5);
+			Z = strNew.substr(0, strNew.size() - 1);
+			ZN = "";
+
+			place = strIns.find(" :");
+			instance = strIns.substr(0, place);
+			instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
+			//cout << instance << endl;
+			ZNN = 0;
+			/*cout << "A =" << A << endl;
+			cout << "B =" << B << endl;
+			cout << "Z =" << Z << endl;
+			cout << "-----------------------------" << endl;*/
+		}
+		
+		
+		
+		
+		if ((pos = vhdl.at(x).find(value) != std::string::npos) && (std::find(temp.begin(), temp.end(), instance) == temp.end())) {
+			
+			
+				if ((ZNN == 1) && (ZN != value && Z != value) && (std::find(temp.begin(), temp.end(), instance) == temp.end())) {
+					temp.push_back(instance);
+					
+						value = ZN;
+						x = -1;
+					
+				}
+				
+			
+				if ((ZNN == 0) && (ZN != value && Z != value) && (std::find(temp.begin(), temp.end(), instance) == temp.end())) {
+					temp.push_back(instance);
+					
+						value = Z;
+						x = -1;
+					
+					
+				}
+
+		}
+
+		cout << instance <<" : "<<value<< endl;
+		//cout << value << endl;
+		if (std::find(output.begin(), output.end(), value) != output.end()) {
+			value = recheck;
+			cout << "RECHECK  :" << value << endl;
+			x = -1;
+			temp.push_back("Next routing");
+			//break;
+		}
+		if (x == vhdl.size()-1) { break; }
+	}
+
+	return temp;
+}
 
 unordered_map<string, string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::list<string>op_vectors) {
 	//cout << interconnect_string.size();
@@ -727,7 +891,15 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				}
 			}
 			//cout << " single cell " << endl;
-			
+			for (int x = 0; x < 5; x++ ) {
+				string ipValues = All_ports.at(x);
+				cout << endl;
+				cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+				cout << ipValues << endl;
+				vector<string> li=Routing(ipValues, vhdl,opVectors);
+				for (auto v : li) cout << v << endl;
+
+			}
 		/*	for (auto v : single_cell) cout << v << endl;
 			cout << single_cell_value(instance_str, single_cell) << "okiloiko" << endl;  */
 			//for(auto v: sub_delay(newRw)) cout<<v << endl;
@@ -742,7 +914,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 
 			for (int u = 0; u < vhdl.size(); u++) {
 
-
+				
 				std::string mystr = vhdl.at(u).substr(0, vhdl.at(u).find(" :", 0));
 				
 				mystr.erase(remove_if(mystr.begin(), mystr.end(), isspace), mystr.end());
