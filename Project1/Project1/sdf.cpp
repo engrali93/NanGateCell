@@ -459,20 +459,43 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 	return temp;
 }
 
-vector<string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::list<string>op_vectors) {
+vector<string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::list<string>ip_vectors) {
 	
 	
 	
 	size_t pos = 0;
 	std::string str;
+	string main_str;
 	vector<string> interconnect;
 	for (int i = 0; i < interconnect_string.size(); i++) {
 		str = interconnect_string.at(i);
 		str.erase(std::remove(str.begin(), str.end(), '\\'), str.end());
 		str.erase(0, 18);
+		if ((pos = str.find("/Z") != std::string::npos)){
+			size_t inst_pos = str.find("/Z");
+			string instance = str.substr(0, inst_pos);
+			for (int j = 0; j < vhdl_function.size(); j++) {
+				if (pos = vhdl_function.at(j).find(instance) != std::string::npos) {
+					string temp_str = vhdl_function.at(j);
+					if (pos = temp_str.find("ZN =>") != std::string::npos) {
+						size_t num = temp_str.find("ZN => ");
+						temp_str= temp_str.substr(num + 6, temp_str.length() -(num+7));
+						main_str = temp_str + " net , " + str;
+						//cout << main_str << endl;
+					}
+					if (pos = temp_str.find("Z =>") != std::string::npos) {
+						size_t num = temp_str.find("Z => ");
+						temp_str = temp_str.substr(num + 5, temp_str.length() - (num + 6));
+						main_str = temp_str + " net , " + str;
+						//cout << main_str << endl;
+					}
+				}
+			}
+			//cout << instance << endl;
+		}
 		//cout << endl;
 		//cout << str << endl;
-		interconnect.push_back(str);
+		interconnect.push_back(main_str);
 	}
 	//std::regex reg7("\[0-9]+\.[0-9]+");
 	//unordered_map<string, string> interconnect_hashmap;
@@ -932,7 +955,7 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 	
 	return str_final;
 }
-void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports, unordered_map<string, int> ports_values,vector<string> instance_str,std::list<string> opVectors)
+void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports, unordered_map<string, int> ports_values,vector<string> instance_str,std::list<string> opVectors, std::list<string> ipvectors)
 	{
 	//for (auto v : instance_str) cout << v << "shai";
 	//for (auto v : All_ports) cout << v << " : " << ports_values[v] << endl; //all values
@@ -972,7 +995,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 
 				}
 			}
-			vector<string> interconnect_net_time = interconnect_value(interconnect_table, vhdl,All_ports,opVectors);
+			vector<string> interconnect_net_time = interconnect_value(interconnect_table, vhdl,All_ports,ipvectors);
 			//for(auto v: sort_data(fordata_Vec)) cout<<v<<endl;
 			vector<string> newRw = sort_data(fordata_Vec);
 			

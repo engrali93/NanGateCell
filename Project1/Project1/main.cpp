@@ -1048,7 +1048,7 @@ int main()
 
 	/*	cout << for_sdf << endl;*/
 		
-		sdf(loc, vhdlfunction_data,all_possible_ports,hashGateValue,instance_str,op_Vec	);
+		sdf(loc, vhdlfunction_data,all_possible_ports,hashGateValue,instance_str,op_Vec,ip_Vec	);
 		
 		
 
