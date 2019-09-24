@@ -480,8 +480,8 @@ vector<string> interconnect_value(std::vector<string> interconnect_string, std::
 	return interconnect;
 }
 
-unordered_map<string, vector<string>> convert_cell(vector<string> single_cell, vector<string> vhdl_func) {
-	unordered_map<string, vector<string>> convertable;
+vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func) {
+	//vector<string> convertable;
 	vector<string> data;
 	string instance;
 	string function_Cell;
@@ -621,7 +621,7 @@ unordered_map<string, vector<string>> convert_cell(vector<string> single_cell, v
 					cond.replace(zbit, 4, "1");
 				}
 				data.push_back(cond);
-				cout << cond << endl;
+				//cout << cond << endl;
 			}
 
 			if ((pos = single_cell.at(x).find("A") != std::string::npos) && (pos = single_cell.at(x).find("B1") == std::string::npos)) {
@@ -645,7 +645,7 @@ unordered_map<string, vector<string>> convert_cell(vector<string> single_cell, v
 				}
 					
 				data.push_back(cond);
-				cout << cond << endl;
+				//cout << cond << endl;
 			}
 
 		}
@@ -663,8 +663,8 @@ unordered_map<string, vector<string>> convert_cell(vector<string> single_cell, v
 
 		
 	}
-	convertable.emplace(instance, data);
-	return convertable;
+	
+	return data;
 }
 string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_data, unordered_map<string, int> ports_values) {
 	string IOPath;
@@ -991,14 +991,25 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 
 				if (((pos = cell_table.at(i).find("CELL")) != std::string::npos) && ((pos = cell_table.at(i).find("CELLTYPE")) == std::string::npos)) {
 					single_cell=sort_cell(cell_table, i);
+					string temp_instance;
 					
+					for (int j = 0; j < single_cell.size(); j++) {
+						if (pos = single_cell.at(j).find("INSTANCE") != std::string::npos) {
+							size_t num = single_cell.at(j).find_last_of("INSTANCE ");
+							//cout<<"num"<< num<<"size" << single_cell.at(i).length()<<endl;
+							temp_instance = single_cell.at(j).substr(num + 1, single_cell.at(j).length() - (num + 2));
+						}
+					}
+					//cout << temp_instance << endl;
 					cout << " single cell \n" << endl;
 					//for (auto v : single_cell) cout << v << endl;
-					convert_cell(single_cell, vhdlFunc_data);
+					//convert_cell(single_cell, vhdlFunc_data);
+					modified_data.emplace(temp_instance, convert_cell(single_cell, vhdlFunc_data));
 					//cout<< single_cell_value(instance_str, single_cell,ports_values);// << "okiloiko" << endl;
 					
 				}
 			}
+			cout << modified_data.size() << "size" << endl;
 			//cout << " single cell " << endl;
 			for (int x = 0; x < 5; x++ ) {
 				string ipValues = All_ports.at(x);
