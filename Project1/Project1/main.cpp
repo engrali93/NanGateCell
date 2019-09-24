@@ -872,7 +872,7 @@ int main()
 					for (int i = 0; i < (int)x.size(); i++) {
 						size_t pos = x.at(i).find("=>");
 						port_data.push_back(x.at(i).substr(pos + 2));
-						cout << x.at(i).substr(pos+2) << endl;
+						//cout << x.at(i).substr(pos+2) << endl;
 					}
 					/*for (int i = 0; i< port_data.size(); i++) {
 						cout << port_data.at(i) << endl;
@@ -901,7 +901,7 @@ int main()
 
 					//*for (auto v : port_data)cout << v << endl;
 					int mycount = std::count(port_data.begin(), port_data.end(), "NULL");
-					cout <<"\n"<< mycount << endl;
+					//cout <<"\n"<< mycount << endl;
 					
 					
 					if (mycount == 3) { // values
@@ -912,7 +912,7 @@ int main()
 								int x_temp= nangatecell.gate(str1, hashGateValue[port_data[0]], 0, 0, 0, 0);
 
 								hashGateValue.emplace(port_data.at(1), x_temp);
-								cout << " matched " <<hashGateValue[port_data[1]] << port_data.at(1)<<endl;
+								//cout << " matched " <<hashGateValue[port_data[1]] << port_data.at(1)<<endl;
 
 							}
 						
@@ -927,7 +927,7 @@ int main()
 
 								int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], 0, 0, 0);
 								hashGateValue.emplace(port_data.at(2), x_temp);
-								cout << " matched " << hashGateValue[port_data[2]] << port_data.at(2) <<","<<port_data.at(0)<<port_data.at(1)<< endl;
+								//cout << " matched " << hashGateValue[port_data[2]] << port_data.at(2) <<","<<port_data.at(0)<<port_data.at(1)<< endl;
 
 							}
 
@@ -941,7 +941,7 @@ int main()
 
 							int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], 0, 0);
 							hashGateValue.emplace(port_data.at(3), x_temp);
-							cout << " matched " << hashGateValue[port_data[3]] << port_data.at(3) << "," << port_data.at(0) << port_data.at(1) << port_data.at(2)<< endl;
+							//cout << " matched " << hashGateValue[port_data[3]] << port_data.at(3) << "," << port_data.at(0) << port_data.at(1) << port_data.at(2)<< endl;
 
 						}
 
@@ -974,7 +974,7 @@ int main()
 								hashGateValue.emplace(port_data.at(4), 0);
 							}
 							
-							cout << " matched " << hashGateValue[port_data[3]] << port_data.at(3) << hashGateValue[port_data[4]] << port_data.at(4)<< endl;
+							//cout << " matched " << hashGateValue[port_data[3]] << port_data.at(3) << hashGateValue[port_data[4]] << port_data.at(4)<< endl;
 
 						}
 
@@ -999,7 +999,7 @@ int main()
 
 							int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], hashGateValue[port_data[3]], 0);
 							hashGateValue.emplace(port_data.at(4), x_temp);
-							cout << " matched " << hashGateValue[port_data[4]] << port_data.at(4) << endl;
+							//cout << " matched " << hashGateValue[port_data[4]] << port_data.at(4) << endl;
 
 						}
 

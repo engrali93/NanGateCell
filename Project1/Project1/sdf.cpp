@@ -401,7 +401,7 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 			strNew = strNew.erase(0, place + 5);
 			place = strNew.find(",");
 			B = strNew.substr(0, place);
-			cout << B << endl;
+			//cout << B << endl;
 			place = strNew.find("Z => ");
 			strNew = strNew.erase(0, place + 5);
 			Z = strNew.substr(0, strNew.size() - 1);
@@ -444,11 +444,11 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 
 		}
 
-		cout << instance <<" : "<<value<< endl;
+		//cout << instance <<" : "<<value<< endl;
 		//cout << value << endl;
 		if (std::find(output.begin(), output.end(), value) != output.end()) {
 			value = recheck;
-			cout << "RECHECK  :" << value << endl;
+			//cout << "RECHECK  :" << value << endl;
 			x = -1;
 			temp.push_back("Next routing");
 			//break;
@@ -459,85 +459,213 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 	return temp;
 }
 
-unordered_map<string, string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::list<string>op_vectors) {
-	//cout << interconnect_string.size();
-	//cout << "okokok";
-	int co = 5;
-	std::string valnet;
+vector<string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::list<string>op_vectors) {
+	
+	
+	
 	size_t pos = 0;
-	std::regex reg7("\[0-9]+\.[0-9]+");
-	unordered_map<string, string> interconnect_hashmap;
+	std::string str;
+	vector<string> interconnect;
 	for (int i = 0; i < interconnect_string.size(); i++) {
-		std::string value = interconnect_string.at(i);
-		value.erase(std::remove(value.begin(), value.end(), '\\'), value.end());
-		value.erase(0, 18);
-		
-
-		std::sregex_iterator currentMatch(value.begin(), value.end(), reg7);
-
-		// Used to determine if there are any more matches
-		std::sregex_iterator lastMatch;
-		vector<string> time;
-		vector<string> temp;
-		// While the current match doesn't equal the last
-		while (currentMatch != lastMatch) {
-			std::smatch match = *currentMatch;
-			//std::cout << match.str() << "\n";
-			currentMatch++;
-			string tempVal = match.str();
-			//cout << tempVal <<"ooooo"<< endl;
-			temp.push_back(tempVal);
-		}
-		std::string time_temp = "(" + temp.at(0) + ":" + temp.at(1) + ":" + temp.at(2) + ")";
-		
-		std::size_t posa = value.find_first_of(" ");
-		std::string net = value.substr(0, posa);
-
-		if ((pos = net.find("/") != std::string::npos)) {
-			pos = net.find("/");
-			std::string instance = net.substr(0, pos);
-			std::string outval = net.substr(pos + 1, net.length() - pos);
-			for (int k = 0; k < vhdl_function.size(); k++) {
-				if ((pos = vhdl_function.at(k).find(instance) != std::string::npos)) {
-					std::size_t posb = vhdl_function.at(k).find_last_of(outval + " => ");
-					valnet = vhdl_function.at(k).substr(posb + 1);
-					valnet.erase(std::remove(valnet.begin(), valnet.end(), ')'), valnet.end());
-					//cout << "XXXXXX" + valnet << endl;
-					if (std::find(op_vectors.begin(), op_vectors.end(), valnet) == op_vectors.end()) {
-						//cout << "not present ===" + valnet <<" tim : "+time_temp<< endl;
-						interconnect_hashmap.emplace(valnet, time_temp);
-						
-					}
-					else {
-						
-					}
-						
-					
-					
-				}
-			}
-		}
-		else {
-			valnet = net;
-			//cout << "pppp===" + valnet;
-			if (interconnect_hashmap.find(valnet) == interconnect_hashmap.end()) {
-				interconnect_hashmap.emplace(valnet, time_temp);
-				//cout <<"pppp==="+ valnet;
-			}
-			
-			
-		}
-		
-		//cout << " check it " + value << endl;
+		str = interconnect_string.at(i);
+		str.erase(std::remove(str.begin(), str.end(), '\\'), str.end());
+		str.erase(0, 18);
+		//cout << endl;
+		//cout << str << endl;
+		interconnect.push_back(str);
 	}
-	//cout << "ok size : " + interconnect_hashmap.size() << endl;
-	/*for (int j = 0; j < All_ports.size(); j++) {
-		cout << All_ports.at(j) << " : " << interconnect_hashmap[All_ports.at(j)] << endl;
-
-	}*/
-	return interconnect_hashmap;
+	//std::regex reg7("\[0-9]+\.[0-9]+");
+	//unordered_map<string, string> interconnect_hashmap;
+	
+	return interconnect;
 }
 
+unordered_map<string, vector<string>> convert_cell(vector<string> single_cell, vector<string> vhdl_func) {
+	unordered_map<string, vector<string>> convertable;
+	vector<string> data;
+	string instance;
+	string function_Cell;
+	size_t pos = 0;
+	string cond;
+	string A;
+	string A1;
+	string A2;
+	string B;
+	string B1;
+	string B2;
+	string Z;
+	string ZN;
+	for (int i = 0; i < single_cell.size(); i++) {
+		if (pos = single_cell.at(i).find("INSTANCE") != std::string::npos) {
+			size_t num = single_cell.at(i).find_last_of("INSTANCE ");
+			//cout<<"num"<< num<<"size" << single_cell.at(i).length()<<endl;
+			instance = single_cell.at(i).substr(num + 1, single_cell.at(i).length() - (num + 2));
+		}
+
+	}
+	for (int k = 0; k < vhdl_func.size(); k++) {
+		if (pos = vhdl_func.at(k).find(instance) != std::string::npos) {
+			function_Cell = vhdl_func.at(k);
+
+			size_t numx = function_Cell.find("map");
+			function_Cell = function_Cell.substr(numx + 5, function_Cell.length() - (numx + 6));
+
+			if ((pos = function_Cell.find("A") != std::string::npos) && (pos = function_Cell.find("B") == std::string::npos)) {
+				size_t positionA = function_Cell.find("A =>");
+				size_t comma = function_Cell.find(",");
+
+				A = function_Cell.substr(positionA + 5, comma - (positionA + 5));
+				function_Cell.erase(0, comma);
+				size_t positionZN = function_Cell.find("ZN =>");
+				ZN = function_Cell.substr(positionZN + 6);
+
+			}
+
+			if ((pos = function_Cell.find("B") != std::string::npos) && (pos = function_Cell.find("B1") == std::string::npos)) {
+				size_t positionA = function_Cell.find("A =>");
+				size_t comma = function_Cell.find(",");
+
+				A = function_Cell.substr(positionA + 5, comma - (positionA + 5));
+				function_Cell.erase(0, comma);
+				size_t positionB = function_Cell.find("B =>");
+				size_t comma2 = function_Cell.find(", Z");
+				//cout << comma2 << endl;
+				B = function_Cell.substr(positionB + 5, comma2 - (positionB + 5));
+
+				function_Cell.erase(0, comma2);
+				size_t positionZ = function_Cell.find("Z =>");
+				Z = function_Cell.substr(positionZ + 5);
+				//cout << "A :" << A << " ,B :" << B << " ,Z :" << Z << endl;
+
+			}
+
+			if ((pos = function_Cell.find("A1") != std::string::npos) && (pos = function_Cell.find("B1") != std::string::npos)) {
+				size_t positionA1 = function_Cell.find("A1 =>");
+				size_t comma = function_Cell.find(",");
+
+				A1 = function_Cell.substr(positionA1 + 6, comma - (positionA1 + 6));
+				function_Cell.erase(0, comma);
+
+				size_t positionA2 = function_Cell.find("A2 =>");
+				size_t comma2 = function_Cell.find(", B1");
+				//cout << comma2 << endl;
+				A2 = function_Cell.substr(positionA2 + 6, comma2 - (positionA2 + 6));
+				function_Cell.erase(0, comma2);
+
+				size_t positionB1 = function_Cell.find("B1 =>");
+				size_t comma3 = function_Cell.find(", B2");
+				B1 = function_Cell.substr(positionB1 + 6, comma3 - (positionB1 + 6));
+				function_Cell.erase(0, comma3);
+
+				size_t positionB2 = function_Cell.find("B2 =>");
+				size_t comma4 = function_Cell.find(", ZN");
+				B2 = function_Cell.substr(positionB2 + 6, comma4 - (positionB2 + 6));
+				function_Cell.erase(0, comma4);
+
+				size_t positionZN = function_Cell.find("ZN =>");
+				ZN = function_Cell.substr(positionZN + 6, comma4 - (positionZN + 6));
+
+
+
+				//cout << "A1 :" << A1  << ",A2 :" << A2  << ",B1 :" << B1  << ",B2 :" <<B2<< ",ZN:" << ZN << endl;
+
+
+			}
+		}
+	}
+
+	for (int x = 0; x < single_cell.size(); x++) {
+
+		if ((pos = single_cell.at(x).find("COND") != std::string::npos) && (pos = single_cell.at(x).find("IOPATH") != std::string::npos)) {
+			if (pos = single_cell.at(x).find("A1") != std::string::npos) {
+				cond = single_cell.at(x);
+				size_t a1 = cond.find("A1");
+				cond.replace(a1, 2, A1);
+
+				size_t a2 = cond.find("A2");
+				cond.replace(a2, 2, A2);
+
+				size_t b1 = cond.find("B1");
+				cond.replace(b1, 2, B1);
+
+				size_t b2 = cond.find("B2");
+				cond.replace(b2, 2, B2);
+
+				size_t zn = cond.find("ZN");
+				cond.replace(zn, 2, ZN);
+
+				if (pos = cond.find("1'b0") != std::string::npos) {
+					size_t zbit = cond.find("1'b0");
+					cond.replace(zbit, 4, "0");
+				}
+				if (pos = cond.find("1'b0") != std::string::npos) {
+					size_t zbit = cond.find("1'b0");
+					cond.replace(zbit, 4, "0");
+				}
+				if (pos = cond.find("1'b0") != std::string::npos) {
+					size_t zbit = cond.find("1'b0");
+					cond.replace(zbit, 4, "0");
+
+				}
+				//for 1 bit
+				if (pos = cond.find("1'b1") != std::string::npos){
+						size_t zbit = cond.find("1'b1");
+						cond.replace(zbit, 4, "1");
+					}
+				if (pos = cond.find("1'b1") != std::string::npos) {
+					size_t zbit = cond.find("1'b1");
+					cond.replace(zbit, 4, "1");
+				}
+				if (pos = cond.find("1'b1") != std::string::npos) {
+					size_t zbit = cond.find("1'b1");
+					cond.replace(zbit, 4, "1");
+				}
+				data.push_back(cond);
+				cout << cond << endl;
+			}
+
+			if ((pos = single_cell.at(x).find("A") != std::string::npos) && (pos = single_cell.at(x).find("B1") == std::string::npos)) {
+				cond = single_cell.at(x);
+				size_t a = cond.find("A ");
+				cond.replace(a, 1, A);
+
+				size_t b = cond.find("B");
+				cond.replace(b, 1, B);
+
+				size_t z = cond.find("Z");
+				cond.replace(z, 1, Z);
+				
+				if (pos = cond.find("1'b0") != std::string::npos) {
+					size_t zbit = cond.find("1'b0");
+					cond.replace(zbit, 4, "0");
+				}
+				if (pos = cond.find("1'b1") != std::string::npos) {
+					size_t obit = cond.find("1'b1");
+					cond.replace(obit, 4, "1");
+				}
+					
+				data.push_back(cond);
+				cout << cond << endl;
+			}
+
+		}
+
+		if ((pos = single_cell.at(x).find("COND") == std::string::npos) && (pos = single_cell.at(x).find("IOPATH") != std::string::npos)) {
+			cond = single_cell.at(x);
+			size_t a = cond.find("A ");
+			cond.replace(a, 1, A);
+
+			size_t zn = cond.find("ZN");
+			cond.replace(zn, 2, ZN);
+			data.push_back(cond);
+			//cout << cond << endl;
+		}
+
+		
+	}
+	convertable.emplace(instance, data);
+	return convertable;
+}
 string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_data, unordered_map<string, int> ports_values) {
 	string IOPath;
 	string str;
@@ -808,6 +936,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 	{
 	//for (auto v : instance_str) cout << v << "shai";
 	//for (auto v : All_ports) cout << v << " : " << ports_values[v] << endl; //all values
+	unordered_map<string, vector<string>> modified_data;
 		std::string line_;
 		vector<string> vhdl = vhdlFunc_data; ;
 		vector<string> vhdl_chip_list;
@@ -822,8 +951,8 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 		std::vector<string> interconnect_table;
 		std::vector<string> cell_table;
 		std::vector<string> single_cell;
-		
-		
+		unordered_map<string, int> previous;
+		for (auto v : All_ports) previous.emplace(v, 0);
 		unordered_map<string, vector<string>> output_cell_block;
 		if (in_sdf_file.is_open())
 		{
@@ -832,29 +961,10 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				read_line = line_;
 				
 
-				if ((pos = read_line.find("IOPATH") != std::string::npos) || (pos = read_line.find("INTERCONNECT") != std::string::npos)) {
-					string temp_time= sub_delay(read_line);// final time
+				if ((pos = read_line.find("INTERCONNECT") != std::string::npos)) {
+										
+						interconnect_table.push_back(read_line); //for saving all the interconnect
 					
-					//std::regex reg7("\\(\[0-9]+\.\[0-9]+\:\[0-9]+\.\[0-9]+\:\[0-9]+\.\[0-9]+\\)");
-					std::regex reg7("\[0-9]+\.[0-9]+");
-					vector<string> temp_replace= PrintMatches1(read_line, reg7);
-					string rem_str1 = temp_replace.at(0);
-					string rem_str2 = temp_replace.at(1);
-					
-					std::regex target("("+rem_str1+")");
-					std::regex target2("(" + rem_str2 + ")");
-					std::string replacement = temp_time;
-					std::string replacement2 = "";
-					std::string s2 = std::regex_replace(read_line, target, replacement);
-					std::string s3 = std::regex_replace(s2, target2, replacement2);
-					std::size_t pos = s3.find_last_of(temp_time);      // position of "live" in str
-					
-					std::string str3 = s3.erase(pos+1,3); // final embedded time
-					
-					fordata_Vec.push_back(str3);
-					if (pos = read_line.find("INTERCONNECT") != std::string::npos) {
-						interconnect_table.push_back(str3); //for saving all the interconnect
-					}
 
 				}
 				else {
@@ -862,7 +972,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 
 				}
 			}
-			unordered_map<string, string> interconnect_net_time = interconnect_value(interconnect_table, vhdl,All_ports,opVectors);
+			vector<string> interconnect_net_time = interconnect_value(interconnect_table, vhdl,All_ports,opVectors);
 			//for(auto v: sort_data(fordata_Vec)) cout<<v<<endl;
 			vector<string> newRw = sort_data(fordata_Vec);
 			
@@ -875,9 +985,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 					cell_table.push_back(newRw.at(i));
 				}
 			}
-			//cout << " cellllllllllllllll" << endl;
-			//for (auto v : cell_table) cout << v << endl; //this one is for print cells 
-			//for (auto v : interconnect_table) cout << v << endl; //display of interconnect
+			
 
 			for (int i = 0; i < cell_table.size(); i++) {
 
@@ -886,7 +994,8 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 					
 					cout << " single cell \n" << endl;
 					//for (auto v : single_cell) cout << v << endl;
-					cout<< single_cell_value(instance_str, single_cell,ports_values);// << "okiloiko" << endl;
+					convert_cell(single_cell, vhdlFunc_data);
+					//cout<< single_cell_value(instance_str, single_cell,ports_values);// << "okiloiko" << endl;
 					
 				}
 			}
