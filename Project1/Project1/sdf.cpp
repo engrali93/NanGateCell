@@ -14,6 +14,7 @@
 #include <iterator>
 #include <unordered_map>
 #include <windows.h>
+#include <algorithm>
 
 
 
@@ -503,6 +504,67 @@ vector<string> interconnect_value(std::vector<string> interconnect_string, std::
 	return interconnect;
 }
 
+vector<string> time_route(vector<string>routing_li, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, vector<string> interconnect_net_time, vector<string>vhdl, string ipValues, vector<string> interconnect_table) {
+	vector<string> result;
+	
+	size_t pos;
+	string input_start;
+	string previous_value = ipValues;
+	cout << "start" << endl;
+	for (int i = 0; i < routing_li.size(); i++) {
+
+		for (int p = 0; p < interconnect_table.size(); p++) {
+			if ((pos = interconnect_table.at(p).find(ipValues)!= std::string::npos) && (pos = interconnect_table.at(p).find(routing_li.at(i)) != std::string::npos)) {
+				cout << interconnect_table.at(p)<<endl;
+				previous_value = routing_li.at(i);
+			}
+		}
+		//cout << "previous : " << previous_value << endl;
+		if ((pos = routing_li.at(i).find("Next") == std::string::npos) && (pos = routing_li.at(i+1).find("Next") == std::string::npos)) {
+			string instance = routing_li.at(i);
+			for (int j = 0; j < interconnect_net_time.size(); j++) {
+				//cout << interconnect_net_time.at(j) << endl;
+				if ((pos = interconnect_net_time.at(j).find(previous_value) != std::string::npos) && (pos = interconnect_net_time.at(j).find(routing_li.at(i+1)) != std::string::npos)) {
+					cout << interconnect_net_time.at(j) << endl;
+				}
+			}
+			previous_value = routing_li.at(i);
+			//cout << instance<<endl;
+			//cout << instance_str.at(i) << endl;
+		}
+		if ((pos = routing_li.at(i).find("Next") == std::string::npos) && (pos = routing_li.at(i + 1).find("Next") != std::string::npos)) {
+			for (int h = 0; h < vhdl.size(); h++) {
+				if ((pos = vhdl.at(h).find(routing_li.at(i)) != std::string::npos)) {
+					string temp_str = vhdl.at(h);
+					if (pos = temp_str.find("ZN =>") != std::string::npos) {
+						size_t num = temp_str.find("ZN => ");
+						temp_str = temp_str.substr(num + 6, temp_str.length() - (num + 7));
+						
+						cout << temp_str << endl;
+					}
+					if (pos = temp_str.find("Z =>") != std::string::npos) {
+						size_t num = temp_str.find("Z => ");
+						temp_str = temp_str.substr(num + 5, temp_str.length() - (num + 6));
+						cout << temp_str << endl;
+					}
+					//cout << vhdl.at(h);
+				}
+			}
+			string instance = routing_li.at(i);
+			previous_value = ipValues;
+			//cout << instance_str.at(i) << endl;
+		}
+		if ((pos = routing_li.at(i).find("Next") != std::string::npos)) {
+			previous_value = ipValues;
+		}
+		
+		//previous_value = routing_li.at(i);
+
+	}
+	return result;
+}
+
+
 vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func) {
 	//vector<string> convertable;
 	vector<string> data;
@@ -974,6 +1036,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 		std::vector<string> interconnect_table;
 		std::vector<string> cell_table;
 		std::vector<string> single_cell;
+		vector<string> interconnect_not_modified;
 		unordered_map<string, int> previous;
 		for (auto v : All_ports) previous.emplace(v, 0);
 		unordered_map<string, vector<string>> output_cell_block;
@@ -987,6 +1050,9 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				if ((pos = read_line.find("INTERCONNECT") != std::string::npos)) {
 										
 						interconnect_table.push_back(read_line); //for saving all the interconnect
+						string strtmp = read_line;
+						strtmp.erase(std::remove(strtmp.begin(), strtmp.end(), '\\'), strtmp.end());
+						interconnect_not_modified.push_back(strtmp);
 					
 
 				}
@@ -1034,12 +1100,13 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 			}
 			cout << modified_data.size() << "size" << endl;
 			//cout << " single cell " << endl;
-			for (int x = 0; x < 5; x++ ) {
+			for (int x = 0; x < ipvectors.size(); x++ ) {
 				string ipValues = All_ports.at(x);
 				cout << endl;
 				cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
 				cout << ipValues << endl;
 				vector<string> li=Routing(ipValues, vhdl,opVectors);
+				vector<string> jik=time_route(li,previous,ports_values,modified_data,interconnect_net_time,vhdl, ipValues, interconnect_not_modified);
 				for (auto v : li) cout << v << endl;
 
 			}

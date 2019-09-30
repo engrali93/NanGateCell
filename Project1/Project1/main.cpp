@@ -168,7 +168,7 @@ int main()
 	
 	
 	string loc = "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
-	
+	string out_result = "D:/project arbeit/Output_Result/result.txt";
 
 
 	ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd"); // 2 BIT
@@ -1044,7 +1044,21 @@ int main()
 		vector<string> vhdlfunction_data = funcVector_split(for_sdf);
 		
 
-		
+		std::ofstream ofsr ;
+		ofsr.open(out_result, std::ofstream::out | std::ofstream::app);
+
+		ofsr << "=============== VHDL ==============="<<endl;
+		ofsr << "----------------Input Vector-----------------" << endl;
+		for (auto v : ip_Vec)
+		ofsr << v << " : " << hashGateValue[v] << endl;
+		ofsr << "----------------NETS-----------------" << endl;
+
+		ofsr << "--------Output--------" << endl;
+		for (auto v : op_Vec)
+			ofsr << v << " : " << hashGateValue[v] << endl;
+
+
+		ofsr.close();
 
 	/*	cout << for_sdf << endl;*/
 		
