@@ -289,7 +289,7 @@ string Addition_timing(string str, string condition) {
 			temp.push_back(tempVal);
 		}
 		answer = "(" + temp.at(3) + ":" + temp.at(4) + ":" + temp.at(5) + ")";
-		cout << answer << endl;
+		//cout << answer << endl;
 	}
 
 	return answer;
@@ -553,6 +553,9 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 	string previous_value = ipValues;
 	result.push_back(previous_value);
 	cout << "start" << endl;
+	sort(interconnect_net_time.begin(), interconnect_net_time.end());
+	interconnect_net_time.erase(unique(interconnect_net_time.begin(), interconnect_net_time.end()), interconnect_net_time.end());
+	//for (auto v : interconnect_net_time) cout << v << "huwa" << endl;
 	for (int i = 0; i < routing_li.size(); i++) {
 
 		for (int p = 0; p < interconnect_table.size(); p++) {
@@ -567,14 +570,18 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 		//cout << "previous : " << previous_value << endl;
 		if ((pos = routing_li.at(i).find("Next") == std::string::npos) && (pos = routing_li.at(i+1).find("Next") == std::string::npos)) {
 			string instance = routing_li.at(i);
+			
 			for (int j = 0; j < interconnect_net_time.size(); j++) {
 				//cout << interconnect_net_time.at(j) << endl;
-				if ((pos = interconnect_net_time.at(j).find(previous_value) != std::string::npos) && (pos = interconnect_net_time.at(j).find(routing_li.at(i+1)) != std::string::npos)) {
+				if ((pos = interconnect_net_time.at(j).find(instance) != std::string::npos) && (pos = interconnect_net_time.at(j).find(routing_li.at(i+1)) != std::string::npos)) {
 					//cout << interconnect_net_time.at(j) << endl;
 					result.push_back(interconnect_net_time.at(j));
+					previous_value = routing_li.at(i+1);
+					//cout << previous_value << "previous" << endl;
+					//break;
 				}
 			}
-			previous_value = routing_li.at(i);
+			//previous_value = routing_li.at(i);
 			result.push_back("inst_:"+routing_li.at(i + 1));
 			//cout << instance<<endl;
 			//cout << instance_str.at(i) << endl;
@@ -614,22 +621,111 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 	return result;
 }
 
-vector<string> All_time_route(vector<string>net_include, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, string ipValues) {
-	vector<string> result;
-	string a;
+string condition_filtering_time(vector<string>cell, unordered_map<string, int> previous, unordered_map<string, int> ports_values, string instance, string instance_char, vector<string>vhdl) {
+	string result;
 	size_t pos;
+	string str;
+	for (int i = 0; i < vhdl.size(); i++) {
+		if ((pos = vhdl.at(i).find(instance) != std::string::npos)) {
+			str = vhdl.at(i);
+			string value = instance_char + " => ";
+			size_t num = str.find(value);
+			str.erase(0, num+4);
+			size_t anum = str.find(",");
+			str.erase(anum,str.length() );
+			str.erase(remove_if(str.begin(), str.end(), isspace), str.end());
+			str.erase(std::remove(str.begin(), str.end(), '>'), str.end());
+			
+			//cout << str << "vhdl" << endl;
+		}
+	}
+		for (int i = 0; i < cell.size(); i++) {
+			if ((pos = cell.at(i).find("COND") == std::string::npos) && (pos = cell.at(i).find("IOPATH") != std::string::npos) && (pos = cell.at(i).find(str) != std::string::npos)) {
+				result = cell.at(i);
+
+				if ((ports_values[str] == previous[str])) {
+					result = "(0.000:0.000:0.000)";
+				}
+				if ((ports_values[str] != previous[str])) {
+					if (ports_values[str] == 1) {
+						result=(Addition_timing(cell.at(i), "R"));
+					}
+				}
+				if ((ports_values[str] != previous[str])) {
+					if (ports_values[str] == 0) {
+						result =(Addition_timing(cell.at(i), "F"));
+					}
+				}
+				
+				break;
+			
+			}
+		}
+		return result;
+	
+}
+vector<string> All_time_route(vector<string>net_include, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, string ipValues,vector<string>vhdl) {
+	vector<string> result;
+	vector<string> a;
+	string previous_value;
+	//a.push_back(ipValues);
+	size_t pos;
+	for (auto v : net_include) cout << v << endl;
+	cout << "iiiiiiiiiiiiiiiiiiiiiiii" << endl;
 	for (int i=0; i < net_include.size(); i++) {
-		if ((pos = net_include.at(i).find("i_n") != std::string::npos)) {
+		if ((pos = net_include.at(i).find("i_n:") != std::string::npos)) {
 			if ((ports_values[ipValues] == previous[ipValues])) {
 				 
 			}
 			if ((ports_values[ipValues] != previous[ipValues])) {
 				if (ports_values[ipValues] == 1) {
-					Addition_timing(net_include.at(i),"R");
+					a.push_back(Addition_timing(net_include.at(i),"R"));
 				}
-
 			}
+			if ((ports_values[ipValues] != previous[ipValues])) {
+				if (ports_values[ipValues] == 0) {
+					a.push_back(Addition_timing(net_include.at(i), "F"));
+				}
+			}
+		}
+		if ((pos = net_include.at(i).find("inst_:") != std::string::npos)) {
+			//cout << net_include.at(i) <<"===="<< endl;
+			
+			// taking all respective string to sort the instance
+			string value_temp = net_include.at(i - 2);
+			string sort_str = net_include.at(i-1);
+			string current = net_include.at(i);
+			
+			//taking pin value to be used later 
+			string temp_char = current.substr(6, current.size() - 6); // instance
+			size_t numa = sort_str.find(temp_char);
+			sort_str=sort_str.erase(0, numa+(temp_char.size()+1));
+			sort_str=sort_str.substr(0, 2);
+			sort_str.erase(remove_if(sort_str.begin(), sort_str.end(), isspace), sort_str.end()); // pin value
+			
+			vector<string> cell = modified_data[temp_char];
+			string time_cond=condition_filtering_time(cell, previous, ports_values, temp_char, sort_str, vhdl); // filtering the time
+			a.push_back(time_cond);
+																										  //for (auto v : cell) cout << v << " !!!!!!" << endl;
+			cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+			//cout << "kiiii = " + temp_char << endl;
 
+			//cout << "PP : " + value_temp << ", pv:" + sort_str << ", cur:" + current << endl;
+
+
+		}
+		if ((pos = net_include.at(i).find("net") != std::string::npos)) {
+			string net = net_include.at(i);
+			size_t poa = net.find(" net");
+			net=net.substr(0, poa);
+			cout << net_include.at(i - 1) << endl;
+			cout << net_include.at(i + 1) << endl;
+			cout << net.size() << endl;
+			cout << net_include.at(i) << endl;
+		}
+		if ((pos = net_include.at(i).find("o_ut:") != std::string::npos)) {
+			//cout << net_include.at(i) << "outtt" << endl;
+			//a.push_back(net_include.at(i));
 		}
 	}
 
@@ -1177,7 +1273,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				cout << ipValues << endl;
 				vector<string> li=Routing(ipValues, vhdl,opVectors);
 				vector<string> net_include=time_route(li,previous,ports_values,modified_data,interconnect_net_time,vhdl, ipValues, interconnect_not_modified);
-				vector<string> final_values = All_time_route(net_include, previous, ports_values, modified_data, ipValues);
+				vector<string> final_values = All_time_route(net_include, previous, ports_values, modified_data, ipValues,vhdl);
 				
 				for (auto v : li) cout << v << endl;
 
