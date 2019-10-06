@@ -252,7 +252,48 @@ string PrintMatches2(std::string str, std::regex reg) {
 	//std::cout << std::endl;
 	return finalTime;
 }
+string Addition_timing(string str, string condition) {
+	string answer;
+	std::regex reg("(\[0-9]+\.[0-9]+)");
+	std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
+	if (condition == "R") {
+		// Used to determine if there are any more matches
+		std::sregex_iterator lastMatch;
+		vector<string> time;
+		vector<string> temp;
+		// While the current match doesn't equal the last
+		while (currentMatch != lastMatch) {
+			std::smatch match = *currentMatch;
+			//std::cout << match.str() << "\n";
+			currentMatch++;
+			string tempVal = match.str();
+			//cout << tempVal <<"sssss"<< endl;
+			temp.push_back(tempVal);
+		}
+		answer = "(" + temp.at(0) + ":" + temp.at(1) + ":" + temp.at(2) + ")";
+		//cout << answer << endl;
+	}
 
+	if (condition == "F") {
+		// Used to determine if there are any more matches
+		std::sregex_iterator lastMatch;
+		vector<string> time;
+		vector<string> temp;
+		// While the current match doesn't equal the last
+		while (currentMatch != lastMatch) {
+			std::smatch match = *currentMatch;
+			//std::cout << match.str() << "\n";
+			currentMatch++;
+			string tempVal = match.str();
+			//cout << tempVal <<"sssss"<< endl;
+			temp.push_back(tempVal);
+		}
+		answer = "(" + temp.at(3) + ":" + temp.at(4) + ":" + temp.at(5) + ")";
+		cout << answer << endl;
+	}
+
+	return answer;
+}
 std::string sub_delay(std::string data) {
 	size_t pos = 0;
 	string final_time;
@@ -510,13 +551,17 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 	size_t pos;
 	string input_start;
 	string previous_value = ipValues;
+	result.push_back(previous_value);
 	cout << "start" << endl;
 	for (int i = 0; i < routing_li.size(); i++) {
 
 		for (int p = 0; p < interconnect_table.size(); p++) {
 			if ((pos = interconnect_table.at(p).find(ipValues)!= std::string::npos) && (pos = interconnect_table.at(p).find(routing_li.at(i)) != std::string::npos)) {
-				cout << interconnect_table.at(p)<<endl;
+				//cout << interconnect_table.at(p)<<"first"<<endl;
 				previous_value = routing_li.at(i);
+				
+				result.push_back("i_n:"+interconnect_table.at(p));
+				result.push_back("inst_:"+previous_value);
 			}
 		}
 		//cout << "previous : " << previous_value << endl;
@@ -525,10 +570,12 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 			for (int j = 0; j < interconnect_net_time.size(); j++) {
 				//cout << interconnect_net_time.at(j) << endl;
 				if ((pos = interconnect_net_time.at(j).find(previous_value) != std::string::npos) && (pos = interconnect_net_time.at(j).find(routing_li.at(i+1)) != std::string::npos)) {
-					cout << interconnect_net_time.at(j) << endl;
+					//cout << interconnect_net_time.at(j) << endl;
+					result.push_back(interconnect_net_time.at(j));
 				}
 			}
 			previous_value = routing_li.at(i);
+			result.push_back("inst_:"+routing_li.at(i + 1));
 			//cout << instance<<endl;
 			//cout << instance_str.at(i) << endl;
 		}
@@ -539,19 +586,21 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 					if (pos = temp_str.find("ZN =>") != std::string::npos) {
 						size_t num = temp_str.find("ZN => ");
 						temp_str = temp_str.substr(num + 6, temp_str.length() - (num + 7));
-						
-						cout << temp_str << endl;
+						result.push_back("o_ut:"+temp_str);
+						//cout << temp_str << endl;
 					}
 					if (pos = temp_str.find("Z =>") != std::string::npos) {
 						size_t num = temp_str.find("Z => ");
 						temp_str = temp_str.substr(num + 5, temp_str.length() - (num + 6));
-						cout << temp_str << endl;
+						//cout << temp_str << endl;
+						result.push_back("o_ut:"+temp_str);
 					}
 					//cout << vhdl.at(h);
 				}
 			}
 			string instance = routing_li.at(i);
 			previous_value = ipValues;
+			result.push_back(previous_value);
 			//cout << instance_str.at(i) << endl;
 		}
 		if ((pos = routing_li.at(i).find("Next") != std::string::npos)) {
@@ -561,10 +610,31 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 		//previous_value = routing_li.at(i);
 
 	}
+	//for (auto v : result) cout << v <<"final"<< endl;
 	return result;
 }
 
+vector<string> All_time_route(vector<string>net_include, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, string ipValues) {
+	vector<string> result;
+	string a;
+	size_t pos;
+	for (int i=0; i < net_include.size(); i++) {
+		if ((pos = net_include.at(i).find("i_n") != std::string::npos)) {
+			if ((ports_values[ipValues] == previous[ipValues])) {
+				 
+			}
+			if ((ports_values[ipValues] != previous[ipValues])) {
+				if (ports_values[ipValues] == 1) {
+					Addition_timing(net_include.at(i),"R");
+				}
 
+			}
+
+		}
+	}
+
+	return result;
+}
 vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func) {
 	//vector<string> convertable;
 	vector<string> data;
@@ -1106,7 +1176,9 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
 				cout << ipValues << endl;
 				vector<string> li=Routing(ipValues, vhdl,opVectors);
-				vector<string> jik=time_route(li,previous,ports_values,modified_data,interconnect_net_time,vhdl, ipValues, interconnect_not_modified);
+				vector<string> net_include=time_route(li,previous,ports_values,modified_data,interconnect_net_time,vhdl, ipValues, interconnect_not_modified);
+				vector<string> final_values = All_time_route(net_include, previous, ports_values, modified_data, ipValues);
+				
 				for (auto v : li) cout << v << endl;
 
 			}
