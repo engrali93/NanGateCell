@@ -625,6 +625,7 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 	string result;
 	size_t pos;
 	string str;
+	string comb_match = "N";
 	unordered_map<string, int> combination;
 	vector<string> present_pin;
 	for (int i = 0; i < vhdl.size(); i++) {
@@ -668,18 +669,47 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 				size_t non = temp_string.find("IOPATH");
 				temp_string = temp_string.substr(0, non);
 				present_pin.clear();
+				comb_match = "N";
 				for (int j = 0; j < All_ports.size(); j++) {
 					if ((pos = temp_string.find(All_ports.at(j)) != std::string::npos) && (All_ports.at(j)!= str)) {
 						present_pin.push_back(All_ports.at(j));
 						string reg = All_ports.at(j)+" == ";
 						size_t posa = temp_string.find(reg);
 						char bit = temp_string.at(posa + reg.size());
+						int bitn = bit - '0';
+						combination.emplace(All_ports.at(j), bitn);
 						cout << reg << " lll" << bit << endl;
 					}
 				}
+				for (int k = 0; k < present_pin.size(); k++) {
+					if (combination[present_pin.at(k)] != ports_values[present_pin.at(k)]) {
+						comb_match = "N";
+						break;
+					}
+					if (combination[present_pin.at(k)] == ports_values[present_pin.at(k)]) {
+						comb_match="Y";
+					}
+				}
+				if (comb_match == "Y") {
+					if (previous[str] == ports_values[str]) {
+						result = "(0.000:0.000:0.000)";
+					}
+					if ((previous[str] != ports_values[str]) && (ports_values[str] == 1)) {
+						result = Addition_timing(cell.at(i), "R");
+					}
+					if ((previous[str] != ports_values[str]) && (ports_values[str] == 0)) {
+						result = Addition_timing(cell.at(i), "F");
+					}
+									   					
+					break;
+				}
+				if (comb_match == "N") {
+					result = "(0.000:0.000:0.000)";
+					
+				}
 
 				//for (auto v : present_pin) cout << v << "oresent pin" << endl;
-				string temp = cell.at(i);
+				
 
 			}
 
@@ -692,6 +722,45 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 		return result;
 	
 }
+float convert_string_to_float(string str) {
+	
+
+	// object from the class stringstream 
+	stringstream val(str);
+
+	// The object has the value 12345 and stream 
+	// it to the integer x 
+	float x = 0;
+	val >> x;
+
+	return x;
+}
+string Add_string(vector<string> time) {
+	string result;
+	std::regex reg("(\[0-9]+\.[0-9]+)");
+	vector<string> ans;
+	float min = 0.000;
+	float typ = 0.000;
+	float max = 0.000;
+	for (int i = 0; i < time.size(); i++) {
+		ans= PrintMatches3(time.at(i),reg);
+		min = min + (convert_string_to_float(ans.at(0)));
+		typ = typ + (convert_string_to_float(ans.at(1)));
+		max = max + (convert_string_to_float(ans.at(1)));
+
+	}
+	std::ostringstream strmin;
+	std::ostringstream strtyp;
+	std::ostringstream strmax;
+	strmin << min;
+	strtyp << typ;
+	strmax << max;
+	std::string s1(strmin.str());
+	std::string s2(strtyp.str());
+	std::string s3(strmax.str());
+	result = "(" + s1 + ":" + s2 + ":" + s3 + ")";
+	return result;
+}
 vector<string> All_time_route(vector<string>net_include, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, string ipValues,vector<string>vhdl, vector<string> All_ports) {
 	vector<string> result;
 	vector<string> a;
@@ -703,7 +772,7 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 	for (int i=0; i < net_include.size(); i++) {
 		if ((pos = net_include.at(i).find("i_n:") != std::string::npos)) {
 			if ((ports_values[ipValues] == previous[ipValues])) {
-				 
+				a.push_back("(0.000:0.000:0.000)");
 			}
 			if ((ports_values[ipValues] != previous[ipValues])) {
 				if (ports_values[ipValues] == 1) {
@@ -752,6 +821,12 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 			cout << net_include.at(i) << endl;
 		}
 		if ((pos = net_include.at(i).find("o_ut:") != std::string::npos)) {
+			
+			string ans = Add_string(a);
+			string output = net_include.at(i).erase(0, 5);
+			string temp11 = ipValues + " => " + output + " :: " + ans;
+			result.push_back(temp11);
+			
 			//cout << net_include.at(i) << "outtt" << endl;
 			//a.push_back(net_include.at(i));
 		}
@@ -1302,7 +1377,9 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				vector<string> li=Routing(ipValues, vhdl,opVectors);
 				vector<string> net_include=time_route(li,previous,ports_values,modified_data,interconnect_net_time,vhdl, ipValues, interconnect_not_modified);
 				vector<string> final_values = All_time_route(net_include, previous, ports_values, modified_data, ipValues,vhdl, All_ports);
-				
+				cout << "okikikikikikikikiki" << endl;
+				for (auto v : final_values) cout << v << endl;
+				cout << "okikikikikikikikiki" << endl;
 				for (auto v : li) cout << v << endl;
 
 			}
