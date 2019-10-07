@@ -621,10 +621,12 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 	return result;
 }
 
-string condition_filtering_time(vector<string>cell, unordered_map<string, int> previous, unordered_map<string, int> ports_values, string instance, string instance_char, vector<string>vhdl) {
+string condition_filtering_time(vector<string>cell, unordered_map<string, int> previous, unordered_map<string, int> ports_values, string instance, string instance_char, vector<string>vhdl, vector<string> All_ports) {
 	string result;
 	size_t pos;
 	string str;
+	unordered_map<string, int> combination;
+	vector<string> present_pin;
 	for (int i = 0; i < vhdl.size(); i++) {
 		if ((pos = vhdl.at(i).find(instance) != std::string::npos)) {
 			str = vhdl.at(i);
@@ -660,11 +662,37 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 				break;
 			
 			}
-		}
+			if ((pos = cell.at(i).find("COND") != std::string::npos) && (pos = cell.at(i).find("IOPATH " + str) != std::string::npos)) {
+
+				string temp_string = cell.at(i);
+				size_t non = temp_string.find("IOPATH");
+				temp_string = temp_string.substr(0, non);
+				present_pin.clear();
+				for (int j = 0; j < All_ports.size(); j++) {
+					if ((pos = temp_string.find(All_ports.at(j)) != std::string::npos) && (All_ports.at(j)!= str)) {
+						present_pin.push_back(All_ports.at(j));
+						string reg = All_ports.at(j)+" == ";
+						size_t posa = temp_string.find(reg);
+						char bit = temp_string.at(posa + reg.size());
+						cout << reg << " lll" << bit << endl;
+					}
+				}
+
+				//for (auto v : present_pin) cout << v << "oresent pin" << endl;
+				string temp = cell.at(i);
+
+			}
+
+			}
+		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+		cout << instance << " : " << instance_char << endl;
+		for (auto v : present_pin) cout << v << "present pin" << endl;
+		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+		
 		return result;
 	
 }
-vector<string> All_time_route(vector<string>net_include, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, string ipValues,vector<string>vhdl) {
+vector<string> All_time_route(vector<string>net_include, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, string ipValues,vector<string>vhdl, vector<string> All_ports) {
 	vector<string> result;
 	vector<string> a;
 	string previous_value;
@@ -704,7 +732,7 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 			sort_str.erase(remove_if(sort_str.begin(), sort_str.end(), isspace), sort_str.end()); // pin value
 			
 			vector<string> cell = modified_data[temp_char];
-			string time_cond=condition_filtering_time(cell, previous, ports_values, temp_char, sort_str, vhdl); // filtering the time
+			string time_cond=condition_filtering_time(cell, previous, ports_values, temp_char, sort_str, vhdl, All_ports); // filtering the time
 			a.push_back(time_cond);
 																										  //for (auto v : cell) cout << v << " !!!!!!" << endl;
 			cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
@@ -1273,7 +1301,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				cout << ipValues << endl;
 				vector<string> li=Routing(ipValues, vhdl,opVectors);
 				vector<string> net_include=time_route(li,previous,ports_values,modified_data,interconnect_net_time,vhdl, ipValues, interconnect_not_modified);
-				vector<string> final_values = All_time_route(net_include, previous, ports_values, modified_data, ipValues,vhdl);
+				vector<string> final_values = All_time_route(net_include, previous, ports_values, modified_data, ipValues,vhdl, All_ports);
 				
 				for (auto v : li) cout << v << endl;
 
