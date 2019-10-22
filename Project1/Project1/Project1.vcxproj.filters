@@ -23,24 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="circuitParamList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gateFunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gataData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inputVector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="commonFunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="moreFunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NanGateCell.h">
       <Filter>Header Files</Filter>
     </ClInclude>

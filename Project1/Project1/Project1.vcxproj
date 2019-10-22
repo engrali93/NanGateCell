@@ -122,12 +122,6 @@
     <ClCompile Include="sdf.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="circuitParamList.h" />
-    <ClInclude Include="gataData.h" />
-    <ClInclude Include="gateFunction.h" />
-    <ClInclude Include="commonFunction.h" />
-    <ClInclude Include="inputVector.h" />
-    <ClInclude Include="moreFunc.h" />
     <ClInclude Include="NanGateCell.h" />
     <ClInclude Include="sdf.h" />
   </ItemGroup>

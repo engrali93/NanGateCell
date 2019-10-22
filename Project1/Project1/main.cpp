@@ -7,15 +7,9 @@
 #include <algorithm>
 #include <iterator>
 #include <numeric>
-#include "circuitParamList.h"
-#include "gateFunction.h"
-#include "gataData.h"
-#include "inputVector.h"
 #include <sstream>
-#include "commonFunction.h"
 #include <cctype>
 #include <regex>
-#include "moreFunc.h"
 #include "NanGateCell.h"
 #include <stdio.h>
 #include "sdf.h"
@@ -138,17 +132,11 @@ unordered_map<int, vector<int>> truthtable_map(int co, vector<std::vector<int> >
 
 int main()
 {
-	moreFunc moreFunc;
-	commonFunction comFun;
-	circuitParamList inputList;
-	circuitParamList outputList;
-	circuitParamList wireList;
-	circuitParamList andGateList;
-	circuitParamList orGateList;
-	circuitParamList xorGateList;
-	gateData gateData;
-	gateFunction gatefunction;
-	inputVector inputVectorNew;
+	
+	
+
+	
+	
 	NanGateCell nangatecell;
 	unordered_map<string, int> hashGateValue;
 	unordered_map<string, int, int> hashFunction2in;
@@ -234,10 +222,9 @@ int main()
 					//std::cout << token << std::endl;
 					line_.erase(0, pos + delimiter.length());
 					std::cout << line_ << std::endl;
-					//result.push_back(token);
-					//listing("input",token);
+					
 					token.erase(remove_if(token.begin(), token.end(), isspace), token.end());
-					inputList.iplist(token);//right one
+				
 					result.push_back(token);
 					ip_Vec.push_back(token);
 					//cout << token;
@@ -245,11 +232,9 @@ int main()
 
 
 				}
-				//std::cout << line_ << std::endl;
-				//result.push_back(line_);
-				//listing("input", line_);
+				
 				line_.erase(remove_if(line_.begin(), line_.end(), isspace), line_.end());
-				inputList.iplist(line_);
+		
 				result.push_back(line_);
 				ip_Vec.push_back(line_);
 
@@ -304,8 +289,7 @@ int main()
 
 
 					if (vect.size() > 2)  vect.erase(vect.begin() + 2, vect.end());
-					/*for (int x : vect)
-						cout << x << " ";*/
+					
 						//*cout <<vect.size()<<"yr"<< endl;
 					//#cout << "\n";
 					//vect_size = vect.size();
@@ -321,7 +305,7 @@ int main()
 					line_.erase(0, pos + delimiter.length());
 
 					token.erase(remove_if(token.begin(), token.end(), isspace), token.end());
-					inputList.iplist(token);//right one
+				
 
 					for (int a = 0; a < vect_size; a++) {
 						std::stringstream str;
@@ -526,13 +510,13 @@ int main()
 						result.push_back(token);
 
 						//listing("wire", token);
-						wireList.wirelist(token);
+						//*wireList.wirelist(token);
 					}
 					line_.erase(remove_if(line_.begin(), line_.end(), isspace), line_.end());
 					std::cout << line_ << std::endl;
 					result.push_back(line_);
 
-					wireList.wirelist(token);
+					//*wireList.wirelist(token);
 					//listing("wire", line_);
 					/*std::list<std::string>::iterator it = result.begin();
 					std::advance(it, 4);
