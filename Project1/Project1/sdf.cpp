@@ -56,62 +56,6 @@ string celltype_name(string line) {
 	return str;
 }
 
-std::vector<string> dataVector(std::vector<string> data, string chipName) {
-	size_t pos=0;
-	string temp_val;
-	NanGateCell nangatecell;
-	vector<string> output_in;
-	vector<string> output_block;
-	string instance;
-	unordered_map<string, string> cell_block;
-	//map<string, std::vector<string>> cell_block2;
-	
-	for (int i = 0; i < data.size(); i++) {
-		//((pos = a.find("port map")) != std::string::npos)
-		/*string str = data.at(i);
-		string str1 = data.at(i+1);*/
-		if (((pos = data.at(i).find("CELL")) != std::string::npos) && 
-			((pos = data.at(i+1).find("CELLTYPE")) != std::string::npos) && 
-			((pos = data.at(i + 2).find(chipName)) != std::string::npos)) {
-			temp_val = data.at(i + 1);
-			string temp_val_instance = data.at(i + 2);
-			string new_str=celltype_name(temp_val);
-			//string newStr= regex_match(temp_val);
-			
-			if (nangatecell.GateType(new_str) == "YES") {
-				//output_block.clear();
-				for (int x = i; x < data.size(); x++) {
-					string tempstr = data.at(x);
-					
-					/*tempstr.erase(data.at())*/
-					tempstr.erase(remove_if(tempstr.begin(), tempstr.end(), isspace), tempstr.end());
-					/*if ((!(pos = data.at(i).find("(")) != std::string::npos) && ((pos = data.at(i).find(")")) != std::string::npos)) {
-						break;
-					}*/
-					if(tempstr == ")")
-					{
-						//output_in.push_back(data.at(x));
-						break;
-					}
-					else {
-						output_in.push_back(data.at(x));
-						output_block.push_back(data.at(x));
-						//cell_block[temp_val_instance].push_back(data.at(x));
-					}
-
-				}
-			}
-		}
-
-		//cell_block.emplace(instance, output_block);
-	}
-
-	
-	
-	return output_in ;
-
-}
-	
 std::vector<string> sort_data(std::vector<string> for_data) {
 	size_t pos = 0;
 	vector<string> cer_data;
@@ -157,44 +101,6 @@ std::vector<string> sort_cell(std::vector<string> for_data, int j) {
 
 
 
-vector<string> PrintMatches1(std::string str, std::regex reg) {
-	
-	
-	std::sregex_iterator currentMatch(str.begin(),str.end(), reg);
-	
-	// Used to determine if there are any more matches
-	std::sregex_iterator lastMatch;
-	vector<string> time;
-	vector<string> temp;
-	// While the current match doesn't equal the last
-	while (currentMatch != lastMatch) {
-		std::smatch match = *currentMatch;
-		//std::cout << match.str() << "\n";
-		currentMatch++;
-		string tempVal = match.str();
-		//cout << tempVal <<"sssss"<< endl;
-		temp.push_back(tempVal);
-	}
-	int vecInt = temp.size();
-	string stra1;
-	string stra2;
-	vector<string> temp2;
-	
-	stra1 = "(" + temp.at(0) + ":" + temp.at(1) + ":" + temp.at(2) + ")";
-	stra2 = "(" + temp.at(3) + ":" + temp.at(4) + ":" + temp.at(5) + ")";
-	temp2.push_back(stra1);
-	temp2.push_back(stra2);
-	
-	//cout << "time"<<endl;
-	
-	//cout << "time"<<endl;
-	
-
-	//cout << finalTime << " success" << endl;
-	//for (auto v:time) cout << v<<endl;
-	//std::cout << std::endl;
-	return temp2;
-}
 string PrintMatches2(std::string str, std::regex reg) {
 	std::sregex_iterator currentMatch(str.begin(),
 		str.end(), reg);
@@ -501,7 +407,7 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 	return temp;
 }
 
-vector<string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::list<string>ip_vectors) {
+vector<string> interconnect_value(std::vector<string> interconnect_string, std::vector<string> vhdl_function, vector<string> All_ports,std::vector<string>ip_vectors) {
 	
 	
 	
@@ -552,7 +458,7 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 	string input_start;
 	string previous_value = ipValues;
 	result.push_back(previous_value);
-	cout << "start" << endl;
+	//cout << "start" << endl;
 	sort(interconnect_net_time.begin(), interconnect_net_time.end());
 	interconnect_net_time.erase(unique(interconnect_net_time.begin(), interconnect_net_time.end()), interconnect_net_time.end());
 	//for (auto v : interconnect_net_time) cout << v << "huwa" << endl;
@@ -678,7 +584,7 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 						char bit = temp_string.at(posa + reg.size());
 						int bitn = bit - '0';
 						combination.emplace(All_ports.at(j), bitn);
-						cout << reg << " lll" << bit << endl;
+						//cout << reg << " lll" << bit << endl;
 					}
 				}
 				for (int k = 0; k < present_pin.size(); k++) {
@@ -714,10 +620,10 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 			}
 
 			}
-		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
-		cout << instance << " : " << instance_char << endl;
-		for (auto v : present_pin) cout << v << "present pin" << endl;
-		cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+		//cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+		//cout << instance << " : " << instance_char << endl;
+		//for (auto v : present_pin) cout << v << "present pin" << endl;
+		//cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
 		
 		return result;
 	
@@ -767,8 +673,8 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 	string previous_value;
 	//a.push_back(ipValues);
 	size_t pos;
-	for (auto v : net_include) cout << v << endl;
-	cout << "iiiiiiiiiiiiiiiiiiiiiiii" << endl;
+	//*for (auto v : net_include) cout << v << endl;
+	//cout << "iiiiiiiiiiiiiiiiiiiiiiii" << endl;
 	for (int i=0; i < net_include.size(); i++) {
 		if ((pos = net_include.at(i).find("i_n:") != std::string::npos)) {
 			if ((ports_values[ipValues] == previous[ipValues])) {
@@ -804,7 +710,7 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 			string time_cond=condition_filtering_time(cell, previous, ports_values, temp_char, sort_str, vhdl, All_ports); // filtering the time
 			a.push_back(time_cond);
 																										  //for (auto v : cell) cout << v << " !!!!!!" << endl;
-			cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
+			//cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
 			//cout << "kiiii = " + temp_char << endl;
 
 			//cout << "PP : " + value_temp << ", pv:" + sort_str << ", cur:" + current << endl;
@@ -815,10 +721,10 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 			string net = net_include.at(i);
 			size_t poa = net.find(" net");
 			net=net.substr(0, poa);
-			cout << net_include.at(i - 1) << endl;
-			cout << net_include.at(i + 1) << endl;
-			cout << net.size() << endl;
-			cout << net_include.at(i) << endl;
+			//cout << net_include.at(i - 1) << endl;
+			//cout << net_include.at(i + 1) << endl;
+			//cout << net.size() << endl;
+			//cout << net_include.at(i) << endl;
 		}
 		if ((pos = net_include.at(i).find("o_ut:") != std::string::npos)) {
 			
@@ -1286,10 +1192,9 @@ string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_da
 	
 	return str_final;
 }
-void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports, unordered_map<string, int> ports_values,vector<string> instance_str,std::list<string> opVectors, std::list<string> ipvectors)
+void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports, unordered_map<string, int> ports_values,vector<string> instance_str,std::list<string> opVectors, std::vector<string> ipvectors, unordered_map<int,unordered_map<string,int>>turthtable)
 	{
-	//for (auto v : instance_str) cout << v << "shai";
-	//for (auto v : All_ports) cout << v << " : " << ports_values[v] << endl; //all values
+	
 	unordered_map<string, vector<string>> modified_data;
 		std::string line_;
 		vector<string> vhdl = vhdlFunc_data; ;
@@ -1297,9 +1202,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 		vector<string> iopath;
 		std::string read_line;
 		int count = 0;
-		//string jo = file_location;
 		size_t pos = 0;
-		//std::string sdffile =  "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
 		ifstream in_sdf_file(sdffile);
 		std::vector<string> fordata_Vec;
 		std::vector<string> interconnect_table;
@@ -1309,20 +1212,22 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 		unordered_map<string, int> previous;
 		for (auto v : All_ports) previous.emplace(v, 0);
 		unordered_map<string, vector<string>> output_cell_block;
+		string sdf_result = "D:/project arbeit/Output_Result/sdf_result.txt";
+		
 		if (in_sdf_file.is_open())
 		{
 			while (getline(in_sdf_file, line_))
 			{
 				read_line = line_;
-				
+
 
 				if ((pos = read_line.find("INTERCONNECT") != std::string::npos)) {
-										
-						interconnect_table.push_back(read_line); //for saving all the interconnect
-						string strtmp = read_line;
-						strtmp.erase(std::remove(strtmp.begin(), strtmp.end(), '\\'), strtmp.end());
-						interconnect_not_modified.push_back(strtmp);
-					
+
+					interconnect_table.push_back(read_line); //for saving all the interconnect
+					string strtmp = read_line;
+					strtmp.erase(std::remove(strtmp.begin(), strtmp.end(), '\\'), strtmp.end());
+					interconnect_not_modified.push_back(strtmp);
+
 
 				}
 				else {
@@ -1330,11 +1235,11 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 
 				}
 			}
-			vector<string> interconnect_net_time = interconnect_value(interconnect_table, vhdl,All_ports,ipvectors);
-			//for(auto v: sort_data(fordata_Vec)) cout<<v<<endl;
-			vector<string> newRw = sort_data(fordata_Vec);
+			vector<string> interconnect_net_time = interconnect_value(interconnect_table, vhdl, All_ports, ipvectors);
 			
-			//for (auto v :newRw) cout << v << endl; // main data
+			vector<string> newRw = sort_data(fordata_Vec);
+
+			
 			for (int i = 0; i < newRw.size(); i++) {
 				if ((pos = newRw.at(i).find("CELL") != std::string::npos) && (pos = newRw.at(i).find("CELLTYPE") == std::string::npos)) {
 					count++;
@@ -1343,14 +1248,15 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 					cell_table.push_back(newRw.at(i));
 				}
 			}
-			
 
+
+			//separating the parameter of the cell
 			for (int i = 0; i < cell_table.size(); i++) {
 
 				if (((pos = cell_table.at(i).find("CELL")) != std::string::npos) && ((pos = cell_table.at(i).find("CELLTYPE")) == std::string::npos)) {
-					single_cell=sort_cell(cell_table, i);
+					single_cell = sort_cell(cell_table, i);
 					string temp_instance;
-					
+
 					for (int j = 0; j < single_cell.size(); j++) {
 						if (pos = single_cell.at(j).find("INSTANCE") != std::string::npos) {
 							size_t num = single_cell.at(j).find_last_of("INSTANCE ");
@@ -1359,63 +1265,54 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 						}
 					}
 					//cout << temp_instance << endl;
-					cout << " single cell \n" << endl;
+					//*cout << " single cell \n" << endl;
 					//for (auto v : single_cell) cout << v << endl;
 					//convert_cell(single_cell, vhdlFunc_data);
 					modified_data.emplace(temp_instance, convert_cell(single_cell, vhdlFunc_data));
 					//cout<< single_cell_value(instance_str, single_cell,ports_values);// << "okiloiko" << endl;
-					
+
 				}
 			}
-			cout << modified_data.size() << "size" << endl;
-			//cout << " single cell " << endl;
-			for (int x = 0; x < ipvectors.size(); x++ ) {
-				string ipValues = All_ports.at(x);
-				cout << endl;
-				cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-				cout << ipValues << endl;
-				vector<string> li=Routing(ipValues, vhdl,opVectors);
-				vector<string> net_include=time_route(li,previous,ports_values,modified_data,interconnect_net_time,vhdl, ipValues, interconnect_not_modified);
-				vector<string> final_values = All_time_route(net_include, previous, ports_values, modified_data, ipValues,vhdl, All_ports);
-				cout << "okikikikikikikikiki" << endl;
-				for (auto v : final_values) cout << v << endl;
-				cout << "okikikikikikikikiki" << endl;
-				for (auto v : li) cout << v << endl;
-
-			}
-		/*	for (auto v : single_cell) cout << v << endl;
-			cout << single_cell_value(instance_str, single_cell) << "okiloiko" << endl;  */
-			//for(auto v: sub_delay(newRw)) cout<<v << endl;
 			
-			//for (auto v : cell_table) cout << v << endl;
 
+		
+			
 
-			//vector<string> ok = output_cell_block["(INSTANCE U12)"];
+			/////////////////////////////////////////////////////
+			// for executing after sorting and sorting in file//
+			////////////////////////////////////////////////////
 
-			//###########################################
-			//###########################################
+			for (int u = 0; u < turthtable.size(); u++) {
+				unordered_map<string, int> hashport = turthtable[u];
+				std::ofstream ofsr;
+				ofsr.open(sdf_result, std::ofstream::out | std::ofstream::app);
 
-			for (int u = 0; u < vhdl.size(); u++) {
+				ofsr << "=============== SDF Result " <<(u+1)<<" ================="<< endl;
 
 				
-				std::string mystr = vhdl.at(u).substr(0, vhdl.at(u).find(" :", 0));
 				
-				mystr.erase(remove_if(mystr.begin(), mystr.end(), isspace), mystr.end());
-				vhdl_chip_list.push_back(mystr);
-				vector<string> blockcell=dataVector(fordata_Vec, mystr);
-				iopath.clear();
-				for (int u = 0; u < blockcell.size(); u++) {
-					
-					if ((pos = blockcell.at(u).find("IOPATH")) != std::string::npos) {
-						iopath.push_back(blockcell.at(u));
-					}
-				}
-				//cout << mystr<<blockcell.size() << endl;
-				//--for (auto v : iopath) cout << v << endl;
-				//--cout << "end" << endl;
+			for (int x = 0; x < ipvectors.size(); x++) {
+				string ipValues = All_ports.at(x);
+				
+				//*cout << ipValues << endl;
+				vector<string> li = Routing(ipValues, vhdl, opVectors);//for making the list of chain series
+
+				vector<string> net_include = time_route(li, previous, hashport, modified_data, interconnect_net_time, vhdl, ipValues, interconnect_not_modified);// specifying the values
+				vector<string> final_values = All_time_route(net_include, previous, hashport, modified_data, ipValues, vhdl, All_ports);// adding the time 
+			
+				for (auto v : final_values) ofsr << v << endl;
+		
+
 			}
-			/*unordered_map<string, string> okl = dataVector(fordata_Vec);
-			cout << okl["(INSTANCE U12)"] << endl;*/
+			ofsr.close();
+			//previous.clear();
+			//previous = hashport;
+		}
+			cout << endl;
+			cout << "DONE" << endl;
+		
+
+			
 			in_sdf_file.close();
 		}
 	
