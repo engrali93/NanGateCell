@@ -259,13 +259,16 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 	string B;
 	string Z;
 	string instance;
+	string last_instance;
+	string last_value;
 	int ZNN;
 	int x;
+	int j;
 
 		
 	for ( x = 0; x <= vhdl.size(); x++) {
 		//cout << "Value " << value << endl;
-		if ((pos = vhdl.at(x).find("A1") != std::string::npos)) {
+		if ((pos = vhdl.at(x).find("A1 => ") != std::string::npos) && (pos = vhdl.at(x).find("A2 => ") != std::string::npos) && (pos = vhdl.at(x).find("B1 =>") != std::string::npos) && (pos = vhdl.at(x).find("B2 =>") != std::string::npos)) {
 			string strNew = vhdl.at(x);
 			string strIns = vhdl.at(x);
 			//cout << strNew << endl;
@@ -300,6 +303,7 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 				instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
 				//cout << instance << endl;
 				ZNN = 1;
+			//	cout << " A1 :" << A1  << " ,A2 :" << A2 << " ,B1 :" << B1 << " , B2 :" << B2 << ", ZN =" << ZN << endl;
 				/*cout << "A1 =" << A1 << endl;
 				cout << "B1 =" << B1 << endl;
 				cout << "A2 =" << A2 << endl;
@@ -309,7 +313,49 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 				cout << "-----------------------------" << endl;*/
 							
 		}
-		if ((pos = vhdl.at(x).find("A") != std::string::npos) && (pos = vhdl.at(x).find("B") == std::string::npos)) {
+		if ((pos = vhdl.at(x).find("A => ") != std::string::npos) && (pos = vhdl.at(x).find("B1 => ") != std::string::npos) && (pos = vhdl.at(x).find("B2 => ") != std::string::npos) && (pos = vhdl.at(x).find("ZN => ") != std::string::npos)) {
+			string strNew = vhdl.at(x);
+			string strIns = vhdl.at(x);
+			//cout << strNew << endl;
+			size_t place = strNew.find("B1 => ");
+
+			strNew = strNew.erase(0, place + 6);
+			place = strNew.find(",");
+			B1 = strNew.substr(0, place);
+
+			place = strNew.find("B2 => ");
+			strNew = strNew.erase(0, place + 6);
+			place = strNew.find(",");
+			B2 = strNew.substr(0, place);
+
+			place = strNew.find("A => ");
+			strNew = strNew.erase(0, place + 5);
+			place = strNew.find(",");
+			A = strNew.substr(0, place);
+
+			
+
+			place = strNew.find("ZN => ");
+			strNew = strNew.erase(0, place + 6);
+			ZN = strNew.substr(0, strNew.size() - 1);
+			Z = "";
+
+			place = strIns.find(" :");
+			instance = strIns.substr(0, place);
+			instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
+			//cout << instance << endl;
+			ZNN = 1;
+			//cout << " A :"<<A<<" ,B1 :"<<B1<<" , B2 :"<<B2<< ", ZN =" << ZN << endl;
+			/*cout << "A1 =" << A1 << endl;
+			cout << "B1 =" << B1 << endl;
+			cout << "A2 =" << A2 << endl;
+
+			cout << "B2 =" << B2 << endl;
+			cout << "ZN =" << ZN << endl;
+			cout << "-----------------------------" << endl;*/
+
+		}
+		if ((pos = vhdl.at(x).find("A => ") != std::string::npos) && (pos = vhdl.at(x).find("B =>") == std::string::npos) && (pos = vhdl.at(x).find("B1 =>") == std::string::npos)) {
 
 			string strNew = vhdl.at(x);
 			string strIns = vhdl.at(x);
@@ -323,6 +369,7 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 			place = strNew.find("ZN => ");
 			strNew = strNew.erase(0, place + 5);
 			ZN = strNew.substr(0, strNew.size() - 1);
+			ZN.erase(remove_if(ZN.begin(), ZN.end(), isspace), ZN.end());
 			Z = "";
 
 			place = strIns.find(" :");
@@ -330,12 +377,12 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 			instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
 			//cout << instance << endl;
 			ZNN = 1;
-
+			//cout << " A :" << A <<", ZN =" << ZN << endl;
 			/*cout << "A =" << A << endl;
 			cout << "ZN =" << ZN << endl;
 			cout << "-----------------------------" << endl;*/
 		}
-		if ((pos = vhdl.at(x).find("A") != std::string::npos) && (pos = vhdl.at(x).find("B =>") != std::string::npos)) {
+		if ((pos = vhdl.at(x).find("A =>") != std::string::npos) && (pos = vhdl.at(x).find("B =>") != std::string::npos) && (pos = vhdl.at(x).find("Z =>") != std::string::npos)) {
 			string strNew = vhdl.at(x);
 			string strIns = vhdl.at(x);
 			//cout << strNew << endl;
@@ -360,23 +407,57 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 			instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
 			//cout << instance << endl;
 			ZNN = 0;
+			//cout << " A :" << A << " ,B :" << B << ",Z =" << Z << endl;
 			/*cout << "A =" << A << endl;
 			cout << "B =" << B << endl;
 			cout << "Z =" << Z << endl;
 			cout << "-----------------------------" << endl;*/
 		}
 		
+		if ((pos = vhdl.at(x).find("A =>") != std::string::npos) && (pos = vhdl.at(x).find("B =>") != std::string::npos) && (pos = vhdl.at(x).find("ZN =>") != std::string::npos)) {
+			string strNew = vhdl.at(x);
+			string strIns = vhdl.at(x);
+			//cout << strNew << endl;
+			size_t place = strNew.find("A => ");
+
+			strNew = strNew.erase(0, place + 5);
+			place = strNew.find(",");
+			A = strNew.substr(0, place);
+
+			place = strNew.find("B => ");
+			strNew = strNew.erase(0, place + 5);
+			place = strNew.find(",");
+			B = strNew.substr(0, place);
+			//cout << B << endl;
+			place = strNew.find("ZN => ");
+			strNew = strNew.erase(0, place + 5);
+			ZN = strNew.substr(0, strNew.size() - 1);
+			ZN.erase(remove_if(ZN.begin(), ZN.end(), isspace), ZN.end());
+			Z = "";
+
+			place = strIns.find(" :");
+			instance = strIns.substr(0, place);
+			instance.erase(remove_if(instance.begin(), instance.end(), isspace), instance.end());
+			//cout << instance << endl;
+			ZNN = 1;
+			//cout << " A :" << A << " ,B :" << B <<" , ZN :" << ZN << endl;
+			/*cout << "A =" << A << endl;
+			cout << "B =" << B << endl;
+			cout << "ZN =" << ZN << endl;
+			cout << "-----------------------------" << endl;*/
+		}
 		
 		
-		
+
 		if ((pos = vhdl.at(x).find(value) != std::string::npos) && (std::find(temp.begin(), temp.end(), instance) == temp.end())) {
-			
-			
+		//	cout << " huwa :" << vhdl.at(x) << endl;
+			last_instance = instance;
 				if ((ZNN == 1) && (ZN != value && Z != value) && (std::find(temp.begin(), temp.end(), instance) == temp.end())) {
 					temp.push_back(instance);
 					
 						value = ZN;
 						x = -1;
+						j = 1;
 					
 				}
 				
@@ -386,19 +467,73 @@ vector<string> Routing(std::string str,vector<string>vhdl, list<string>output) {
 					
 						value = Z;
 						x = -1;
-					
+						j = 1;
 					
 				}
 
 		}
+		else if ((pos = vhdl.at(x).find(value) != std::string::npos) && (value == str) && (last_instance != instance) && ((std::find(output.begin(), output.end(), Z) != output.end()) || (std::find(output.begin(), output.end(), ZN) != output.end()))) {
+			//cout << " huwa1.2 :" << vhdl.at(x) << endl;
+			//cout << last_instance << " : " << instance << endl;
+			//last_instance.clear();
+			last_instance = instance;
+			//cout << " huwa 1.2 " << last_instance;
+			if ((ZNN == 1) && (ZN != value && Z != value) && (std::find(output.begin(), output.end(), ZN) != output.end())) {
+				temp.push_back(instance);
 
+				value = ZN;
+				x = -1;
+				j = 1;
+
+			}
+
+
+			if ((ZNN == 0) && (ZN != value && Z != value) && (std::find(output.begin(), output.end(), Z) != output.end())) {
+				temp.push_back(instance);
+
+				value = Z;
+				x = -1;
+				j = 1;
+
+
+			}
+		}
+		else if ((pos = vhdl.at(x).find(value) != std::string::npos) && (str != value) && (std::find(temp.begin(), temp.end(), instance) != temp.end()) && (last_instance != instance) && ((std::find(output.begin(), output.end(), Z) != output.end()) || (std::find(output.begin(), output.end(), ZN) != output.end()))){
+			// cout << " huwa2 :" << vhdl.at(x) << endl;
+			 last_instance = instance;
+			if ((ZNN == 1) && (ZN != value && Z != value) && (std::find(output.begin(), output.end(), ZN) != output.end())) {
+				temp.push_back(instance);
+
+				value = ZN;
+				x = -1;
+				j = 1;
+
+			}
+
+
+			if ((ZNN == 0) && (ZN != value && Z != value) && (std::find(output.begin(), output.end(), Z) != output.end())) {
+				temp.push_back(instance);
+
+				value = Z;
+				x = -1;
+				j = 1;
+
+
+			}
+		}
+		//last_instance = instance;
+		//cout << " last " << last_instance << endl;
+		//cout << " current " << instance << endl;
 		//cout << instance <<" : "<<value<< endl;
 		//cout << value << endl;
-		if (std::find(output.begin(), output.end(), value) != output.end()) {
+		if ((std::find(output.begin(), output.end(), value) != output.end()) && (j==1)) {
 			value = recheck;
+			int n = temp.size();
+			//last_instance = instance;
 			//cout << "RECHECK  :" << value << endl;
 			x = -1;
 			temp.push_back("Next routing");
+			j = 0;
 			//break;
 		}
 		if (x == vhdl.size()-1) { break; }
@@ -419,6 +554,7 @@ vector<string> interconnect_value(std::vector<string> interconnect_string, std::
 		str = interconnect_string.at(i);
 		str.erase(std::remove(str.begin(), str.end(), '\\'), str.end());
 		str.erase(0, 18);
+		//*cout << "iop" << str << endl;
 		if ((pos = str.find("/Z") != std::string::npos)){
 			size_t inst_pos = str.find("/Z");
 			string instance = str.substr(0, inst_pos);
@@ -451,13 +587,15 @@ vector<string> interconnect_value(std::vector<string> interconnect_string, std::
 	return interconnect;
 }
 
-vector<string> time_route(vector<string>routing_li, unordered_map<string, int> previous, unordered_map<string, int> ports_values, unordered_map<string, vector<string>> modified_data, vector<string> interconnect_net_time, vector<string>vhdl, string ipValues, vector<string> interconnect_table) {
+vector<string> time_route(vector<string>routing_li, unordered_map<string, vector<string>> modified_data, vector<string> interconnect_net_time, vector<string>vhdl, string ipValues, vector<string> interconnect_table) {
 	vector<string> result;
 	
 	size_t pos;
 	string input_start;
 	string previous_value = ipValues;
 	result.push_back(previous_value);
+	int ino = 0;
+	int neox = 0;
 	//cout << "start" << endl;
 	sort(interconnect_net_time.begin(), interconnect_net_time.end());
 	interconnect_net_time.erase(unique(interconnect_net_time.begin(), interconnect_net_time.end()), interconnect_net_time.end());
@@ -468,9 +606,13 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 			if ((pos = interconnect_table.at(p).find(ipValues)!= std::string::npos) && (pos = interconnect_table.at(p).find(routing_li.at(i)) != std::string::npos)) {
 				//cout << interconnect_table.at(p)<<"first"<<endl;
 				previous_value = routing_li.at(i);
+				if ((ino == 0)) {
+					result.push_back("i_n:" + interconnect_table.at(p));
+					result.push_back("inst_:" + previous_value);
+					ino = 1;
+				}
 				
-				result.push_back("i_n:"+interconnect_table.at(p));
-				result.push_back("inst_:"+previous_value);
+				
 			}
 		}
 		//cout << "previous : " << previous_value << endl;
@@ -518,6 +660,7 @@ vector<string> time_route(vector<string>routing_li, unordered_map<string, int> p
 		}
 		if ((pos = routing_li.at(i).find("Next") != std::string::npos)) {
 			previous_value = ipValues;
+			ino = 0;
 		}
 		
 		//previous_value = routing_li.at(i);
@@ -549,6 +692,7 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 		}
 	}
 		for (int i = 0; i < cell.size(); i++) {
+			//cout << cell.at(i) << endl;
 			if ((pos = cell.at(i).find("COND") == std::string::npos) && (pos = cell.at(i).find("IOPATH") != std::string::npos) && (pos = cell.at(i).find(str) != std::string::npos)) {
 				result = cell.at(i);
 
@@ -566,11 +710,11 @@ string condition_filtering_time(vector<string>cell, unordered_map<string, int> p
 					}
 				}
 				
-				break;
+				//break;
 			
 			}
 			if ((pos = cell.at(i).find("COND") != std::string::npos) && (pos = cell.at(i).find("IOPATH " + str) != std::string::npos)) {
-
+				//cout << cell.at(i) <<"kokok"<< endl;
 				string temp_string = cell.at(i);
 				size_t non = temp_string.find("IOPATH");
 				temp_string = temp_string.substr(0, non);
@@ -677,8 +821,10 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 	//cout << "iiiiiiiiiiiiiiiiiiiiiiii" << endl;
 	for (int i=0; i < net_include.size(); i++) {
 		if ((pos = net_include.at(i).find("i_n:") != std::string::npos)) {
+			//cout << "in_" << endl;
 			if ((ports_values[ipValues] == previous[ipValues])) {
 				a.push_back("(0.000:0.000:0.000)");
+				
 			}
 			if ((ports_values[ipValues] != previous[ipValues])) {
 				if (ports_values[ipValues] == 1) {
@@ -708,6 +854,7 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 			
 			vector<string> cell = modified_data[temp_char];
 			string time_cond=condition_filtering_time(cell, previous, ports_values, temp_char, sort_str, vhdl, All_ports); // filtering the time
+			//cout << time_cond << "fof" << endl;
 			a.push_back(time_cond);
 																										  //for (auto v : cell) cout << v << " !!!!!!" << endl;
 			//cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
@@ -726,20 +873,26 @@ vector<string> All_time_route(vector<string>net_include, unordered_map<string, i
 			//cout << net.size() << endl;
 			//cout << net_include.at(i) << endl;
 		}
+		//cout << net_include.at(i) << endl;
 		if ((pos = net_include.at(i).find("o_ut:") != std::string::npos)) {
-			
+			//cout << net_include.at(i) << "outtt" << endl;
+			//for (auto v : a) cout << v << endl;
 			string ans = Add_string(a);
+			//cout << "1" << endl;
 			string output = net_include.at(i).erase(0, 5);
+			//cout << "2" << endl;
 			string temp11 = ipValues + " => " + output + " :: " + ans;
+			//cout << "3" << endl;
 			result.push_back(temp11);
 			
-			//cout << net_include.at(i) << "outtt" << endl;
+			//*cout << net_include.at(i) << "outtt" << endl;
 			//a.push_back(net_include.at(i));
 		}
 	}
 
 	return result;
 }
+
 vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func) {
 	//vector<string> convertable;
 	vector<string> data;
@@ -831,6 +984,41 @@ vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func
 
 
 			}
+			if ((pos = function_Cell.find("B1") != std::string::npos) && (pos = function_Cell.find("ZN") != std::string::npos) && (pos = function_Cell.find("B2") != std::string::npos) && (pos = function_Cell.find("A1") == std::string::npos) && (pos = function_Cell.find("A") != std::string::npos)) {
+				size_t positionB1 = function_Cell.find("B1 =>");
+				size_t comma = function_Cell.find(",");
+
+				B1 = function_Cell.substr(positionB1 + 6, comma - (positionB1 + 6));
+				function_Cell.erase(0, comma);
+
+				size_t positionB2 = function_Cell.find("B2 =>");
+				size_t comma2 = function_Cell.find(", A");
+				//cout << comma2 << endl;
+				B2 = function_Cell.substr(positionB2 + 6, comma2 - (positionB2 + 6));
+				function_Cell.erase(0, comma2);
+
+				size_t positionA = function_Cell.find("A =>");
+				size_t comma3 = function_Cell.find(", ZN");
+				A = function_Cell.substr(positionA + 5, comma3 - (positionA + 5));
+				function_Cell.erase(0, comma3);
+
+				//size_t positionB2 = function_Cell.find("B2 =>");
+				//size_t comma4 = function_Cell.find(", ZN");
+				//B2 = function_Cell.substr(positionB2 + 6, comma4 - (positionB2 + 6));
+				//function_Cell.erase(0, comma4);
+
+				size_t positionZN = function_Cell.find("ZN =>");
+				string top = function_Cell;
+				top.erase(0, positionZN + 6);
+				ZN = top.substr(0, top.length());
+				//ZN = function_Cell.substr(positionZN + 6, comma3 - (positionZN + 6));
+
+
+
+				//*cout << "B1 :" << B1  << ",B2 :" << B2  << ",A :" << A  << ",ZN :" <<ZN<< endl;
+
+
+			}
 		}
 	}
 
@@ -883,8 +1071,54 @@ vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func
 				data.push_back(cond);
 				//cout << cond << endl;
 			}
+			
+			if ((pos = single_cell.at(x).find("B1") != std::string::npos) && (pos = single_cell.at(x).find("B2") != std::string::npos) && (pos = single_cell.at(x).find("A ") != std::string::npos) && (pos = single_cell.at(x).find("A1") == std::string::npos)) {
+				cond = single_cell.at(x);
+				size_t a1 = cond.find("B1");
+				cond.replace(a1, 2, B1);
 
-			if ((pos = single_cell.at(x).find("A") != std::string::npos) && (pos = single_cell.at(x).find("B1") == std::string::npos)) {
+				size_t a2 = cond.find("B2");
+				cond.replace(a2, 2, B2);
+
+				size_t b1 = cond.find("A ");
+				cond.replace(b1, 2, A);
+
+				
+
+				size_t zn = cond.find("ZN");
+				cond.replace(zn, 2, ZN);
+
+				if (pos = cond.find("1'b0") != std::string::npos) {
+					size_t zbit = cond.find("1'b0");
+					cond.replace(zbit, 4, "0");
+				}
+				if (pos = cond.find("1'b0") != std::string::npos) {
+					size_t zbit = cond.find("1'b0");
+					cond.replace(zbit, 4, "0");
+				}
+				if (pos = cond.find("1'b0") != std::string::npos) {
+					size_t zbit = cond.find("1'b0");
+					cond.replace(zbit, 4, "0");
+
+				}
+				//for 1 bit
+				if (pos = cond.find("1'b1") != std::string::npos) {
+					size_t zbit = cond.find("1'b1");
+					cond.replace(zbit, 4, "1");
+				}
+				if (pos = cond.find("1'b1") != std::string::npos) {
+					size_t zbit = cond.find("1'b1");
+					cond.replace(zbit, 4, "1");
+				}
+				if (pos = cond.find("1'b1") != std::string::npos) {
+					size_t zbit = cond.find("1'b1");
+					cond.replace(zbit, 4, "1");
+				}
+				data.push_back(cond);
+				//cout << cond << endl;
+			}
+
+			if ((pos = single_cell.at(x).find("A ") != std::string::npos) && (pos = single_cell.at(x).find("B1") == std::string::npos)) {
 				cond = single_cell.at(x);
 				size_t a = cond.find("A ");
 				cond.replace(a, 1, A);
@@ -912,9 +1146,18 @@ vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func
 
 		if ((pos = single_cell.at(x).find("COND") == std::string::npos) && (pos = single_cell.at(x).find("IOPATH") != std::string::npos)) {
 			cond = single_cell.at(x);
-			size_t a = cond.find("A ");
-			cond.replace(a, 1, A);
-
+			if ((pos = cond.find("A ") != std::string::npos) && (pos = cond.find("B1") == std::string::npos) && (pos = cond.find("B2") == std::string::npos)) {
+				size_t a = cond.find("A ");
+				cond.replace(a, 1, A);
+			}
+			if ((pos = cond.find("A ") == std::string::npos) && (pos = cond.find("B1") != std::string::npos) && (pos = cond.find("B2") == std::string::npos)) {
+				size_t a = cond.find("B1 ");
+				cond.replace(a, 2, B1);
+			}
+			if ((pos = cond.find("A ") == std::string::npos) && (pos = cond.find("B1") == std::string::npos) && (pos = cond.find("B2") != std::string::npos)) {
+				size_t a = cond.find("B2 ");
+				cond.replace(a, 2, B2);
+			}
 			size_t zn = cond.find("ZN");
 			cond.replace(zn, 2, ZN);
 			data.push_back(cond);
@@ -926,6 +1169,7 @@ vector<string> convert_cell(vector<string> single_cell, vector<string> vhdl_func
 	
 	return data;
 }
+
 string single_cell_value(vector<string> vhdl_data, vector<string> single_cell_data, unordered_map<string, int> ports_values) {
 	string IOPath;
 	string str;
@@ -1209,6 +1453,7 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 		std::vector<string> cell_table;
 		std::vector<string> single_cell;
 		vector<string> interconnect_not_modified;
+		vector<string> net_include;
 		unordered_map<string, int> previous;
 		for (auto v : All_ports) previous.emplace(v, 0);
 		unordered_map<string, vector<string>> output_cell_block;
@@ -1235,8 +1480,9 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 
 				}
 			}
+			//for (auto v : interconnect_table) cout << v << endl;
 			vector<string> interconnect_net_time = interconnect_value(interconnect_table, vhdl, All_ports, ipvectors);
-			
+			//for (auto v : interconnect_net_time) cout << v << endl;
 			vector<string> newRw = sort_data(fordata_Vec);
 
 			
@@ -1249,40 +1495,58 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				}
 			}
 
-
+			//for (auto v : cell_table) cout << v << endl;
 			//separating the parameter of the cell
 			for (int i = 0; i < cell_table.size(); i++) {
 
 				if (((pos = cell_table.at(i).find("CELL")) != std::string::npos) && ((pos = cell_table.at(i).find("CELLTYPE")) == std::string::npos)) {
+					//cout<<"here"<<endl;
 					single_cell = sort_cell(cell_table, i);
+					//cout << cell_table.at(i) << endl;
 					string temp_instance;
 
 					for (int j = 0; j < single_cell.size(); j++) {
+					//	cout << single_cell.at(j) << endl;
 						if (pos = single_cell.at(j).find("INSTANCE") != std::string::npos) {
+							//cout << "instttttt" << endl;
 							size_t num = single_cell.at(j).find_last_of("INSTANCE ");
 							//cout<<"num"<< num<<"size" << single_cell.at(i).length()<<endl;
 							temp_instance = single_cell.at(j).substr(num + 1, single_cell.at(j).length() - (num + 2));
+							//cout << temp_instance <<" ooooooo"<< endl;
 						}
 					}
 					//cout << temp_instance << endl;
 					//*cout << " single cell \n" << endl;
-					//for (auto v : single_cell) cout << v << endl;
+					//*for (auto v : single_cell) cout << v << endl;
 					//convert_cell(single_cell, vhdlFunc_data);
 					modified_data.emplace(temp_instance, convert_cell(single_cell, vhdlFunc_data));
 					//cout<< single_cell_value(instance_str, single_cell,ports_values);// << "okiloiko" << endl;
-
+					//single_cell.clear();
 				}
 			}
 			
 
 		
-			
+			unordered_map<string, vector<string>> Path_Route;
+			//cout << ipvectors.size() << All_ports.at(16)<< endl;
 
+			for (int x = 0; x < ipvectors.size(); x++) {
+				string ip_Values = All_ports.at(x);
+				//cout << ip_Values << endl;
+				vector<string> li = Routing(ip_Values, vhdl, opVectors);//for making the list of chain series
+				//for (auto v : li)cout << v << endl;
+				net_include = time_route(li, modified_data, interconnect_net_time, vhdl, ip_Values, interconnect_not_modified);// specifying the values
+				//*for (auto v : net_include)cout << v << endl;
+				Path_Route.emplace(ip_Values, net_include);
+				//cout << "ok" <<ip_Values<< endl;
+				net_include.clear();
+			}
 			/////////////////////////////////////////////////////
 			// for executing after sorting and sorting in file//
 			////////////////////////////////////////////////////
-
+			//cout << "here ayp " << endl;
 			for (int u = 0; u < turthtable.size(); u++) {
+				//cout << "andar" << endl;
 				unordered_map<string, int> hashport = turthtable[u];
 				std::ofstream ofsr;
 				ofsr.open(sdf_result, std::ofstream::out | std::ofstream::app);
@@ -1293,20 +1557,23 @@ void  sdf(string sdffile, vector<string> vhdlFunc_data,vector<string> All_ports,
 				
 			for (int x = 0; x < ipvectors.size(); x++) {
 				string ipValues = All_ports.at(x);
+				vector<string> net_includeNew = Path_Route[ipValues];
+				//cout << ipValues << endl;
+				//vector<string> li = Routing(ipValues, vhdl, opVectors);//for making the list of chain series
+				//*cout << "olpol" << endl;
+				//*for (auto v : li) cout << v << endl;
+				//vector<string> net_include = time_route(li, modified_data, interconnect_net_time, vhdl, ipValues, interconnect_not_modified);// specifying the values
+				//for (auto v : net_include) cout << v << endl;
+				//*cout << "pop" << endl;
+				vector<string> final_values = All_time_route(net_includeNew, previous, hashport, modified_data, ipValues, vhdl, All_ports);// adding the time 
 				
-				//*cout << ipValues << endl;
-				vector<string> li = Routing(ipValues, vhdl, opVectors);//for making the list of chain series
-
-				vector<string> net_include = time_route(li, previous, hashport, modified_data, interconnect_net_time, vhdl, ipValues, interconnect_not_modified);// specifying the values
-				vector<string> final_values = All_time_route(net_include, previous, hashport, modified_data, ipValues, vhdl, All_ports);// adding the time 
-			
 				for (auto v : final_values) ofsr << v << endl;
 		
 
 			}
 			ofsr.close();
-			//previous.clear();
-			//previous = hashport;
+			previous.clear();
+			previous = hashport;
 		}
 			cout << endl;
 			cout << "DONE" << endl;

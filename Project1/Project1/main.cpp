@@ -172,17 +172,22 @@ int main()
 	int io = 0;
 	size_t pos = 0;
 	std::string token;
+	int temp_co;
 	//ifstream file_("D:/project arbeit/files/full_adder_vhdl/full_add.vhd");
 	
 	
-	string loc = "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf";
+	//string loc = "D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.sdf"; // 2 bit sdf
+	//string loc = "D:/project arbeit/files/2-bit/4-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=4.sdf"; // 4 bit sdf
+	//string loc = "D:/project arbeit/files/2-bit/8-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=8.sdf"; // 8 bit sdf
+	string loc = "D:/project arbeit/files/2-bit/8-bit-logic/exact_adder_rpl_T=2_TECH=freepdk45tc_B=8.sdf"; // new 8 bit circuit random
 	string out_result = "D:/project arbeit/Output_Result/result.txt";
 	string sdf_result = "D:/project arbeit/Output_Result/sdf_result.txt";
 
 
-	ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd"); // 2 BIT
+	//ifstream file_("D:/project arbeit/files/2-bit/exact_adder_cla_T=2_TECH=freepdk45tc_B=2.vhd"); // 2 BIT
 	//ifstream file_("D:/project arbeit/files/2-bit/4-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=4.vhd"); // 4 BIT
 	//ifstream file_("D:/project arbeit/files/2-bit/8-bit/exact_adder_rpl_T=2_TECH=freepdk45tc_B=8.vhd"); // 8 bit
+	ifstream file_("D:/project arbeit/files/2-bit/8-bit-logic/exact_adder_rpl_T=2_TECH=freepdk45tc_B=8.vhd"); // 8 bit new circuit vhdl
 	
 	if (file_.is_open())
 	{
@@ -334,6 +339,7 @@ int main()
 				int co;
 
 				co = ip_Vec.size();
+				temp_co = co;
 				//*cout << co << endl;
 				///////////////////////////
 				std::vector<std::vector<int> > truthtable_output = truthtable(co);
@@ -806,8 +812,12 @@ int main()
 			file_.close();
 			cout << endl;
 			cout << "====== PLEASE WAIT ======" << endl;
+			//*vector<int> temp_copp;
+			//*for (int o = 0; o < temp_co; o++) { temp_copp.push_back(1); }
 			for (int u = 0; u < running_loop.size(); u++) {
+			//*for (int u = 0; u < 1; u++) {
 				vector<int> bits_vec = running_loop[u];
+				//*vector<int> bits_vec = temp_copp;
 				hashGateValue.clear();
 				Vector.clear();
 				//cout << u << " huwa " << endl;
@@ -933,9 +943,9 @@ int main()
 							{
 
 								int x_temp = nangatecell.gate(str1, hashGateValue[port_data[0]], hashGateValue[port_data[1]], hashGateValue[port_data[2]], 0, 0);
-								cout << "1xtemp" << x_temp << endl;
+								//*cout << "1xtemp" << x_temp << endl;
 								if (x_temp == 1) {
-									cout << "xtemp" << x_temp << endl;
+									//*cout << "xtemp" << x_temp << endl;
 									hashGateValue.emplace(port_data.at(3), 0);
 									hashGateValue.emplace(port_data.at(4), 1);
 								}
